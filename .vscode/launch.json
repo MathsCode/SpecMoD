@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "justMyCode": false,
-            "args": ["-m","QwQ","-s"]
+            "args": ["-m","QwQ","-SL","3","-sim"]
         }
     ]
 }

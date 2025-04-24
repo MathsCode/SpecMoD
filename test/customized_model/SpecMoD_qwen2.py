@@ -483,7 +483,7 @@ class Qwen2Model(Qwen2PreTrainedModel):
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         cache_position: Optional[torch.LongTensor] = None,
-        #[xjm:]
+        # [xjm:] add SpecMoD skip layer list
         skip_layer_list: Optional[List[int]] = None,
         **flash_attn_kwargs: Unpack[FlashAttentionKwargs],
     ) -> BaseModelOutputWithPast:
@@ -536,7 +536,7 @@ class Qwen2Model(Qwen2PreTrainedModel):
 
         for idx, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
             
-            # [xjm:] control skip layer
+            # [xjm:] -----------------control skip layer-------------------
             if idx in skip_layer_list:
                 continue
             

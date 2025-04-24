@@ -36,7 +36,7 @@ def main(args):
     
     dataset_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/dataset/'+args.dataset+'/question.jsonl'
     if args.search:
-        save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/search/{}_{}_{}.jsonl".format(args.model,args.dataset,args.skip_layers)
+        save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/search/{}/{}_{}_{}.jsonl".format(args.skip_layers,args.model,args.dataset,args.skip_layers)
     else:
         save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/answer/{}_{}.jsonl".format(args.model,args.dataset)
     questions = load_questions(dataset_path,args.begin,args.end)
@@ -70,8 +70,15 @@ def main(args):
             **model_inputs,
             max_new_tokens=args.max_new_tokens,
             # temperature=temperature,
-            Spec_search = args.search,
             do_sample = False,
+            
+            # [xjm:] add SpecMoD search controller
+            Spec_search = args.search,
+            # [xjm:] add SpecMoD search layers param.
+            Spec_skip_layer_number=args.skip_layers,
+            # [xjm:] add SpecMoD calculate similarity
+            Spec_cal_sim = args.cal_sim,
+            
         )
         # max_new_tokens = 32768
         # for i in range(max_new_tokens):
@@ -102,5 +109,6 @@ if __name__ == "__main__":
     parser.add_argument("--search", "-s", action='store_true', default=False)
     parser.add_argument("--skip_layers","-SL", type=int, default=0)
     parser.add_argument("--max_new_tokens", "-n", type=int, default=256)
+    parser.add_argument("--cal_sim", "-sim", action='store_true', default=False)
     args = parser.parse_args()
     main(args)

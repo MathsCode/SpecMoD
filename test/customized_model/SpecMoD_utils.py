@@ -120,9 +120,12 @@ class SpecMoD_GenerationMixin(GenerationMixin):
         negative_prompt_attention_mask: Optional[torch.Tensor] = None,
         use_model_defaults: Optional[bool] = None,
         
-        ## [xjm:] add SpecMoD search controller
+        # [xjm:] add SpecMoD search controller
         Spec_search: Optional[bool] = False,
-        
+        # [xjm:] add SpecMoD search layers param.
+        Spec_skip_layer_number: Optional[int] = 1,
+        # [xjm:] add SpecMoD calculate similarity
+        Spec_cal_sim: Optional[bool] = False,
         **kwargs,
     ) -> Union[GenerateOutput, torch.LongTensor]:
         
@@ -381,8 +384,12 @@ class SpecMoD_GenerationMixin(GenerationMixin):
                 generation_config=generation_config,
                 synced_gpus=synced_gpus,
                 streamer=streamer,
-                # [xjm:]
+                # [xjm:] add SpecMoD search controller
                 Spec_search=Spec_search,
+                # [xjm:] add SpecMoD search layers param.
+                Spec_skip_layer_number=Spec_skip_layer_number, 
+                # [xjm:] add SpecMoD calculate similarity
+                Spec_cal_sim=Spec_cal_sim,
                 **model_kwargs,
             )
 
@@ -526,13 +533,18 @@ class SpecMoD_GenerationMixin(GenerationMixin):
         
         #[xjm:] add SpecMoD search controller
         Spec_search:Optional[bool] = False,
+        # [xjm:] add SpecMoD search layers param.
+        Spec_skip_layer_number: Optional[int] = 1,
+        # [xjm:] add SpecMoD calculate similarity
+        Spec_cal_sim: Optional[bool] = False,
         
         **model_kwargs,
     ) -> Union[GenerateNonBeamOutput, torch.LongTensor]:
         # init values
         pad_token_id = generation_config._pad_token_tensor
         output_attentions = generation_config.output_attentions
-        output_hidden_states = generation_config.output_hidden_states
+        # [xjm:] ----------------------Add hidden_states controller----------------------
+        output_hidden_states = True if Spec_cal_sim else generation_config.output_hidden_state
         output_scores = generation_config.output_scores
         output_logits = generation_config.output_logits
         return_dict_in_generate = generation_config.return_dict_in_generate
@@ -586,7 +598,7 @@ class SpecMoD_GenerationMixin(GenerationMixin):
             model_inputs.update({"output_hidden_states": output_hidden_states} if output_hidden_states else {})
 
             
-            candidate_skip_layer_list = []
+            
             if is_prefill:
                 outputs = self(**model_inputs, skip_layer_list = [], return_dict=True)
                 is_prefill = False
@@ -601,24 +613,59 @@ class SpecMoD_GenerationMixin(GenerationMixin):
                 
                 # [xjm:] ----------------------Add SpecMoD Start Search----------------------
                 if Spec_search:
-                    from tqdm import trange
+                    from tqdm import trange,tqdm
                     right_token_logits = outputs.logits[:, -1, :].to(copy=True, dtype=torch.float32, device=input_ids.device)
                     right_token_scores = logits_processor(input_ids, right_token_logits)
                     right_next_tokens = torch.argmax(right_token_scores, dim=-1)
-                    print()
-                    print('{} 1 Layer:'.format(right_next_tokens))
-                    for idx in trange(self.config.num_hidden_layers,desc='Searching'):
-                        spec_model_inputs = copy.deepcopy(tmp_model_inputs)
-                        spec_outputs = model_forward(**spec_model_inputs, skip_layer_list = [idx],return_dict=True)
-                        spec_token_logits = spec_outputs.logits[:, -1, :].to(copy=True, dtype=torch.float32, device=input_ids.device)
-                        spec_token_scores = logits_processor(input_ids, spec_token_logits)
-                        spec_next_tokens = torch.argmax(spec_token_scores, dim=-1)
+                    candidate_skip_layer_list = []
+                    for idx in trange(self.config.num_hidden_layers,desc='Searching 1 Layer'):
+                        Spec_model_inputs = copy.deepcopy(tmp_model_inputs)
+                        Spec_outputs = model_forward(**Spec_model_inputs, skip_layer_list = [idx],return_dict=True)
+                        Spec_token_logits = Spec_outputs.logits[:, -1, :].to(copy=True, dtype=torch.float32, device=input_ids.device)
+                        Spec_token_scores = logits_processor(input_ids, Spec_token_logits)
+                        Spec_next_tokens = torch.argmax(Spec_token_scores, dim=-1)
                         
-                        if spec_next_tokens == right_next_tokens:
-                            print(idx,end=',')
-                            # candidate_skip_layer_list.append(idx)
+                        if Spec_next_tokens == right_next_tokens:
+                            # print(idx,spec_next_tokens.item())
+                            candidate_skip_layer_list.append(idx)
+                    print('{} 1 layer({}):{}'.format(right_next_tokens.item(),len(candidate_skip_layer_list),candidate_skip_layer_list))
+                    
+                    
+                    
+                    # [xjm:] ---------------------Start Search SL Layers--------------------
+                    if Spec_skip_layer_number > 1:
+                        from itertools import combinations
+                        import itertools
+                        Spec_cur_layer_number = 2
+                        while Spec_cur_layer_number <= Spec_skip_layer_number:
+                            Spec_layerSkip_option = list(combinations(candidate_skip_layer_list,Spec_cur_layer_number))
+                            Spec_layerSkip_option = [list(Spec_layerskip_list) for Spec_layerskip_list in Spec_layerSkip_option]
+                            Spec_layerskip_right_set = [] 
+                            for Spec_layerskip_list in tqdm(Spec_layerSkip_option,desc='searching {} layers'.format(Spec_cur_layer_number)):
+                                Spec_model_inputs = copy.deepcopy(tmp_model_inputs)
+                                Spec_model_outputs = model_forward(**Spec_model_inputs,skip_layer_list = Spec_layerskip_list,return_dict = True)
+                                Spec_token_logits = Spec_model_outputs.logits[:, -1, :].to(copy=True, dtype=torch.float32, device=input_ids.device)
+                                Spec_token_scores = logits_processor(input_ids, Spec_token_logits)
+                                Spec_next_tokens = torch.argmax(Spec_token_scores, dim=-1)
+                            
+                                if Spec_next_tokens == right_next_tokens:
+                                    # print(idx,spec_next_tokens.item())
+                                    Spec_layerskip_right_set.append(Spec_layerskip_list)
+                            candidate_skip_layer_list = list(set(itertools.chain(*Spec_layerskip_right_set)))
+                            print('{} {} layer({}){}'.format(right_next_tokens.item(),Spec_cur_layer_number,len(candidate_skip_layer_list),candidate_skip_layer_list))
+                            Spec_cur_layer_number *= 2 
+                    # [xjm:] ----------------------End Search SL Layers--------------------        
                 # [xjm:] ----------------------Add SpecMoD End Search----------------------
-
+                
+                
+                # [xjm:] ----------------------Add SpecMoD Calculate Similarity----------------------
+                # if Spec_cal_sim:
+                #     all_hidden_states = outputs[3]
+                #     for hidden_states in all_hidden_states:
+                        
+                    
+                    
+            
             # synced_gpus: don't waste resources running the code we don't need; kwargs must be updated before skipping
             model_kwargs = self._update_model_kwargs_for_generation(
                 outputs,

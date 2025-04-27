@@ -234,6 +234,8 @@ class Qwen2RMSNorm(nn.Module):
 class Qwen2DecoderLayer(nn.Module):
     def __init__(self, config: Qwen2Config, layer_idx: int):
         super().__init__()
+        # [xjm:] add SpecMoD layer_idx
+        self.layer_idx = layer_idx
         self.hidden_size = config.hidden_size
         self.self_attn = Qwen2Attention(config=config, layer_idx=layer_idx)
         self.mlp = Qwen2MLP(config)
@@ -255,6 +257,9 @@ class Qwen2DecoderLayer(nn.Module):
         use_cache: Optional[bool] = False,
         cache_position: Optional[torch.LongTensor] = None,
         position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,  # necessary, but kept here for BC
+        
+        # [xjm:] add skip_layer_list
+        skip_layer_list: Optional[List[int]] = None,
         **kwargs: Unpack[FlashAttentionKwargs],
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
         residual = hidden_states
@@ -274,6 +279,12 @@ class Qwen2DecoderLayer(nn.Module):
             **kwargs,
         )
         hidden_states = residual + hidden_states
+        # [xjm:] add SpecMoD skip control
+        # if self.layer_idx in skip_layer_list:
+        #     outputs = (hidden_states,)
+        #     if output_attentions:
+        #         outputs += (self_attn_weights,)
+        #     return outputs
 
         # Fully Connected
         residual = hidden_states
@@ -565,6 +576,10 @@ class Qwen2Model(Qwen2PreTrainedModel):
                     use_cache=use_cache,
                     cache_position=cache_position,
                     position_embeddings=position_embeddings,
+                    
+                    # [xjm:] add SpecMoD Skip Layer list
+                    skip_layer_list = skip_layer_list,
+                    
                     **flash_attn_kwargs,
                 )
 

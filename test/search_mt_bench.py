@@ -36,13 +36,18 @@ def main(args):
     
     dataset_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/dataset/'+args.dataset+'/question.jsonl'
     if args.search:
-        save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/search/{}/{}_{}_{}.jsonl".format(args.skip_layers,args.model,args.dataset,args.skip_layers)
+        save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/search/{}/{}_{}_{}.jsonl".format(args.skip_layers,args.model,args.dataset,args.skip_layers)        
     else:
         save_file = "/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/answer/{}_{}.jsonl".format(args.model,args.dataset)
     questions = load_questions(dataset_path,args.begin,args.end)
     
 
     # prompt = "How many r's are in the word \"strawberry\""
+    
+    if args.cal_sim:
+        sim_collector=[[] for i in range(model.config.num_hidden_layers)]
+    else:
+        sim_collector=None
     
     for question in tqdm(questions):
         if question["category"] in temperature_config:
@@ -66,6 +71,8 @@ def main(args):
 
         model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
 
+        
+        
         generated_ids = model.generate(
             **model_inputs,
             max_new_tokens=args.max_new_tokens,
@@ -78,6 +85,8 @@ def main(args):
             Spec_skip_layer_number=args.skip_layers,
             # [xjm:] add SpecMoD calculate similarity
             Spec_cal_sim = args.cal_sim,
+            # [xjm:] add SpecMoD sim_collector
+            Spec_sim_collector=sim_collector,
             
         )
         # max_new_tokens = 32768
@@ -99,7 +108,13 @@ def main(args):
             }
             f_save.write(json.dumps(ans_json) + "\n")
 
-
+    if args.cal_sim and args.save:
+        import pickle
+        file_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/cal_sim/sim_data.pkl'
+        with open(file_path, 'wb') as f:
+            pickle.dump(sim_collector, f)
+            
+            
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", "-d", type=str, default="mt-bench")
@@ -110,5 +125,6 @@ if __name__ == "__main__":
     parser.add_argument("--skip_layers","-SL", type=int, default=0)
     parser.add_argument("--max_new_tokens", "-n", type=int, default=256)
     parser.add_argument("--cal_sim", "-sim", action='store_true', default=False)
+    parser.add_argument("--save", "-sv", action='store_true', default=False)
     args = parser.parse_args()
     main(args)

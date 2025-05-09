@@ -43,6 +43,7 @@ def main(args):
     
 
     # prompt = "How many r's are in the word \"strawberry\""
+    Spec_result_collector = []
     
     if args.cal_sim:
         sim_collector=[[] for i in range(model.config.num_hidden_layers)]
@@ -87,6 +88,8 @@ def main(args):
             Spec_cal_sim = args.cal_sim,
             # [xjm:] add SpecMoD sim_collector
             Spec_sim_collector=sim_collector,
+            # [xjm:] add SpecMoD result collector
+            Spec_result_collector = Spec_result_collector,
             
         )
         # max_new_tokens = 32768
@@ -110,9 +113,13 @@ def main(args):
 
     if args.cal_sim and args.save:
         import pickle
-        file_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/cal_sim/sim_data.pkl'
+        file_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/cal_sim/{}_sim_data_{}.pkl'.format(args.dataset,args.begin)
         with open(file_path, 'wb') as f:
             pickle.dump(sim_collector, f)
+    
+    file_path = '/home/xujiaming/xujiaming/Paper/NIPS_SpecMoD/result/layer_data/{}_question_{}.pkl'.format(args.dataset,args.begin)
+    with open(file_path, 'wb') as f:
+        pickle.dump(Spec_result_collector, f)
             
             
 if __name__ == "__main__":

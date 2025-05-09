@@ -128,6 +128,8 @@ class SpecMoD_GenerationMixin(GenerationMixin):
         Spec_cal_sim: Optional[bool] = False,
         # [xjm:] add SpecMoD sim_collector,
         Spec_sim_collector: Optional[list] = None,
+        # [xjm:] add SpecMoD result collector
+        Spec_result_collector: Optional[list] = None,
         **kwargs,
     ) -> Union[GenerateOutput, torch.LongTensor]:
         
@@ -394,6 +396,8 @@ class SpecMoD_GenerationMixin(GenerationMixin):
                 Spec_cal_sim=Spec_cal_sim,
                 # [xjm:] add SpecMoD sim_collector
                 Spec_sim_collector=Spec_sim_collector,
+                # [xjm:] add SpecMoD  result collector
+                Spec_result_collector = Spec_result_collector,
                 **model_kwargs,
             )
 
@@ -543,6 +547,8 @@ class SpecMoD_GenerationMixin(GenerationMixin):
         Spec_cal_sim: Optional[bool] = False,
         # [xjm:] add SpecMoD sim_collector,
         Spec_sim_collector: Optional[list] = None,
+        # [xjm:] add SpecMoD result collector
+        Spec_result_collector: Optional[list] = None,
         **model_kwargs,
     ) -> Union[GenerateNonBeamOutput, torch.LongTensor]:
         # init values
@@ -690,13 +696,15 @@ class SpecMoD_GenerationMixin(GenerationMixin):
                     
                     # [xjm:] Spec results
                     Spec_model_inputs = copy.deepcopy(tmp_model_inputs)
+                    cur_token_id = Spec_model_inputs['input_ids'][:,-1].unsqueeze(1)
                     Spec_outputs = model_forward(**Spec_model_inputs, skip_layer_list = skip_layer_idx,return_dict=True)
                     Spec_token_logits = Spec_outputs.logits[:, -1, :].to(copy=True, dtype=torch.float32, device=input_ids.device)
                     Spec_token_scores = logits_processor(input_ids, Spec_token_logits)
                     Spec_next_tokens = torch.argmax(Spec_token_scores, dim=-1)
                     
                     if Spec_next_tokens == right_next_tokens:
-                        print('{},{}->Skip Layer({}):{}'.format(right_next_tokens.item(),Spec_next_tokens.item(),len(skip_layer_idx),skip_layer_idx))
+                        print('{},{}->Skip Layer({}):{}'.format(cur_token_id.cpu().item(),Spec_next_tokens.cpu().item(),len(skip_layer_idx),skip_layer_idx))
+                        Spec_result_collector.append([cur_token_id.cpu().item(),right_next_tokens.cpu().item(),len(skip_layer_idx),skip_layer_idx])
                     
                     
                     

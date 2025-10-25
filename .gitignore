@@ -1,3 +1,5 @@
 *.txt
 data/
 train_data/
+model/__pycache__
+.vscode/

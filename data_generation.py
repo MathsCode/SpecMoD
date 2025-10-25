@@ -1,15 +1,17 @@
 from transformers import AutoTokenizer
-from model.qwen3_model import  Spec_Qwen3ForCausalLM
+
 # /share/public/public_models/Qwen3-14B/
+
 
 import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 from typing import Optional
 import json, tqdm
+import torch
 
 from model.utils import storage
-def load_questions(question_file: str, begin: Optional[int], end: Optional[int]):
+def load_questions(question_file: str, begin=None, end=None):
     """Load questions from a file."""
     questions = []
     with open(question_file, "r") as ques_file:
@@ -22,17 +24,32 @@ def load_questions(question_file: str, begin: Optional[int], end: Optional[int])
 
 
 def main(args):
-
+    
+    if args.dev:
+        from model.qwen3_model_dev import  Spec_Qwen3ForCausalLM
+    elif args.profile:
+        from model.qwen3_model_profile import  Spec_Qwen3ForCausalLM
+    
+    if args.device == "infini":
+        model_path = f"/share/others/public_models/{args.model}/"
+        dataset_path = '/home/xujiaming/xujiaming/Paper/dataset/'+args.dataset+'/question.jsonl'
+    elif args.device == "qz":
+        model_path = f"/inspire/hdd/global_public/public_models/Qwen/{args.model}/"
+        dataset_path = '/inspire/hdd/project/inference-chip/xujiaming-253308120313/dataset/benchmark/'+args.dataset+'/question.jsonl'
+    else:
+        assert False, "device error"
+        
     save_json = {}
+    save_cur_hidden_states = []
+    save_true_last_hidden_states = []
+    save_fake_last_hidden_states = []
     storage.reset()
 
-    tokenizer = AutoTokenizer.from_pretrained(f"/share/others/public_models/{args.model}/")
-    model = Spec_Qwen3ForCausalLM.from_pretrained(f"/share/others/public_models/{args.model}/")
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    model = Spec_Qwen3ForCausalLM.from_pretrained(model_path)
 
     model.to("cuda")
 
-
-    dataset_path = '/home/xujiaming/xujiaming/Paper/dataset/'+args.dataset+'/question.jsonl'
     questions = load_questions(dataset_path,args.begin,args.end)
     messages = [
         {"role": "system",
@@ -52,27 +69,46 @@ def main(args):
             return_tensors="pt",
         ).to(model.device)
         save_json_item = {"Prompt":inputs.input_ids.squeeze(0).tolist()}
-        outputs = model.generate(**inputs, max_new_tokens=100, temperature=0.01)
-        json_data, total_length, total_tokens = storage.get_data()
+        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01)
+        
+        json_data, cur_hidden_states, fake_last_hidden_states, true_last_hidden_states, total_length, total_tokens = storage.get_data()
         save_json_item['Token'] = json_data
         save_json_item['avg_len'] = total_length/total_tokens
         save_json[question["question_id"]] = save_json_item
+        cur_hidden_states = torch.cat(cur_hidden_states, dim=0).cpu()
+        fake_last_hidden_states = torch.cat(fake_last_hidden_states, dim=0).cpu()
+        true_last_hidden_states = torch.cat(true_last_hidden_states, dim=0).cpu()
+        save_cur_hidden_states.append(cur_hidden_states)
+        save_fake_last_hidden_states.append(fake_last_hidden_states)
+        save_true_last_hidden_states.append(true_last_hidden_states)
+        
         # print()
-        # print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
         # print(outputs[0][inputs["input_ids"].shape[-1]:])
+    save_cur_hidden_states = torch.cat(save_cur_hidden_states, dim=0)
+    save_fake_last_hidden_states = torch.cat(save_fake_last_hidden_states, dim=0)
+    save_true_last_hidden_states = torch.cat(save_true_last_hidden_states, dim=0)
+    torch.save(save_cur_hidden_states, f'./train_data/{args.dataset}_{args.model}_cur_hidden_states_{args.begin}_{args.end}.pt')
+    torch.save(save_fake_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_fake_last_hidden_states_{args.begin}_{args.end}.pt')
+    torch.save(save_true_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_true_last_hidden_states_{args.begin}_{args.end}.pt')
+    
     print(save_json)
-    save_path = f'./data/{args.dataset}_{args.model}_data_{args.begin}_{args.end}.json'
+    save_path = f'./train_data/{args.dataset}_{args.model}_data_{args.begin}_{args.end}.json'
     with open(save_path, "w") as f:
         json.dump(save_json, f, ensure_ascii=False, indent=4)
+
 
 if __name__ == "__main__":
     import argparse 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--device", type=str, default="infini")
     parser.add_argument("--dataset", "-d", type=str, default="mt-bench")
     # dataset: mt-bench, gsm8k, alpaca, sum, vicuna-bench
-    parser.add_argument("--model", "-m", type=str, default="Qwen3-14B")
-    parser.add_argument("--begin", "-b", type=int,default=0)
-    parser.add_argument("--end", "-e", type=int,default=1)
-    parser.add_argument("--thinking", "-t", action="store_true", default=False)
+    parser.add_argument("--model", "-m", type=str, default="Qwen3-8B")
+    parser.add_argument("--begin", "-b", type=int, default=None)
+    parser.add_argument("--end", "-e", type=int, default=None)
+    parser.add_argument("--dev", action="store_true")
+    parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--max_gen", type=int, default=100)
     args = parser.parse_args()
     main(args)

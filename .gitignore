@@ -1,4 +1,4 @@
-*.txt
+profile_data/
 data/
 train_data/
 model/__pycache__

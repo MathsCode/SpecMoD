@@ -11,6 +11,15 @@ import json, tqdm
 import torch
 
 from model.utils import storage
+
+from transformers.generation.utils import ALL_CACHE_NAMES
+ALL_CACHE_NAMES.extend(['past_hidden_states'])
+
+from model.utils import Spec_update_model_kwargs_for_generation
+
+from transformers.generation.utils import GenerationMixin
+GenerationMixin._update_model_kwargs_for_generation = Spec_update_model_kwargs_for_generation
+
 def load_questions(question_file: str, begin=None, end=None):
     """Load questions from a file."""
     questions = []
@@ -20,6 +29,9 @@ def load_questions(question_file: str, begin=None, end=None):
                 questions.append(json.loads(line))
     questions = questions[begin:end]
     return questions
+
+
+
 
 
 
@@ -69,33 +81,34 @@ def main(args):
             return_tensors="pt",
         ).to(model.device)
         save_json_item = {"Prompt":inputs.input_ids.squeeze(0).tolist()}
-        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01)
-        
-        json_data, cur_hidden_states, fake_last_hidden_states, true_last_hidden_states, total_length, total_tokens = storage.get_data()
-        save_json_item['Token'] = json_data
-        save_json_item['avg_len'] = total_length/total_tokens
-        save_json[question["question_id"]] = save_json_item
-        cur_hidden_states = torch.cat(cur_hidden_states, dim=0).cpu()
-        fake_last_hidden_states = torch.cat(fake_last_hidden_states, dim=0).cpu()
-        true_last_hidden_states = torch.cat(true_last_hidden_states, dim=0).cpu()
-        save_cur_hidden_states.append(cur_hidden_states)
-        save_fake_last_hidden_states.append(fake_last_hidden_states)
-        save_true_last_hidden_states.append(true_last_hidden_states)
+        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01, use_buffer=True, past_hidden_states=None)
+        if args.profile:
+            json_data, cur_hidden_states, fake_last_hidden_states, true_last_hidden_states, total_length, total_tokens = storage.get_data()
+            save_json_item['Token'] = json_data
+            save_json_item['avg_len'] = total_length/total_tokens if total_tokens > 0 else 0
+            save_json[question["question_id"]] = save_json_item
+            cur_hidden_states = torch.cat(cur_hidden_states, dim=0).cpu()
+            fake_last_hidden_states = torch.cat(fake_last_hidden_states, dim=0).cpu()
+            true_last_hidden_states = torch.cat(true_last_hidden_states, dim=0).cpu()
+            save_cur_hidden_states.append(cur_hidden_states)
+            save_fake_last_hidden_states.append(fake_last_hidden_states)
+            save_true_last_hidden_states.append(true_last_hidden_states)
         
         # print()
-        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+        print(tokenizer.decode(outputs[0]))
         # print(outputs[0][inputs["input_ids"].shape[-1]:])
-    save_cur_hidden_states = torch.cat(save_cur_hidden_states, dim=0)
-    save_fake_last_hidden_states = torch.cat(save_fake_last_hidden_states, dim=0)
-    save_true_last_hidden_states = torch.cat(save_true_last_hidden_states, dim=0)
-    torch.save(save_cur_hidden_states, f'./train_data/{args.dataset}_{args.model}_cur_hidden_states_{args.begin}_{args.end}.pt')
-    torch.save(save_fake_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_fake_last_hidden_states_{args.begin}_{args.end}.pt')
-    torch.save(save_true_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_true_last_hidden_states_{args.begin}_{args.end}.pt')
-    
-    print(save_json)
-    save_path = f'./train_data/{args.dataset}_{args.model}_data_{args.begin}_{args.end}.json'
-    with open(save_path, "w") as f:
-        json.dump(save_json, f, ensure_ascii=False, indent=4)
+    if args.profile:
+        save_cur_hidden_states = torch.cat(save_cur_hidden_states, dim=0)
+        save_fake_last_hidden_states = torch.cat(save_fake_last_hidden_states, dim=0)
+        save_true_last_hidden_states = torch.cat(save_true_last_hidden_states, dim=0)
+        torch.save(save_cur_hidden_states, f'./train_data/{args.dataset}_{args.model}_cur_hidden_states_{args.begin}_{args.end}.pt')
+        torch.save(save_fake_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_fake_last_hidden_states_{args.begin}_{args.end}.pt')
+        torch.save(save_true_last_hidden_states, f'./train_data/{args.dataset}_{args.model}_true_last_hidden_states_{args.begin}_{args.end}.pt')
+        
+        print(save_json)
+        save_path = f'./train_data/{args.dataset}_{args.model}_data_{args.begin}_{args.end}.json'
+        with open(save_path, "w") as f:
+            json.dump(save_json, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":

@@ -12,13 +12,7 @@ import torch
 
 from model.utils import storage
 
-from transformers.generation.utils import ALL_CACHE_NAMES
-ALL_CACHE_NAMES.extend(['past_hidden_states'])
 
-from model.utils import Spec_update_model_kwargs_for_generation
-
-from transformers.generation.utils import GenerationMixin
-GenerationMixin._update_model_kwargs_for_generation = Spec_update_model_kwargs_for_generation
 
 def load_questions(question_file: str, begin=None, end=None):
     """Load questions from a file."""
@@ -39,6 +33,14 @@ def main(args):
     
     if args.dev:
         from model.qwen3_model_dev import  Spec_Qwen3ForCausalLM
+        
+        from transformers.generation.utils import ALL_CACHE_NAMES
+        ALL_CACHE_NAMES.extend(['past_hidden_states'])
+
+        from model.utils import Spec_update_model_kwargs_for_generation
+
+        from transformers.generation.utils import GenerationMixin
+        GenerationMixin._update_model_kwargs_for_generation = Spec_update_model_kwargs_for_generation
     elif args.profile:
         from model.qwen3_model_profile import  Spec_Qwen3ForCausalLM
     
@@ -58,7 +60,7 @@ def main(args):
     storage.reset()
 
     tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = Spec_Qwen3ForCausalLM.from_pretrained(model_path)
+    model = Spec_Qwen3ForCausalLM.from_pretrained(model_path).half()
 
     model.to("cuda")
 

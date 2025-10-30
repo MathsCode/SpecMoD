@@ -613,7 +613,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         if output_hidden_states:
             all_hidden_states += (hidden_states,)
 
-        storage.add_true_last_hidden_states(all_hidden_states[-1][:,:-1,:])
+        storage.add_true_last_hidden_states(all_hidden_states[-1][:,-1:,:])
 
         # [xjm:] start dynamic programming for skipping layers
         

@@ -83,8 +83,10 @@ def main(args):
             return_tensors="pt",
         ).to(model.device)
         save_json_item = {"Prompt":inputs.input_ids.squeeze(0).tolist()}
-        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01, use_buffer=True, past_hidden_states=None)
+        if args.dev:
+            outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01, use_buffer=True, past_hidden_states=None)
         if args.profile:
+            outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.01)
             json_data, cur_hidden_states, fake_last_hidden_states, true_last_hidden_states, total_length, total_tokens = storage.get_data()
             save_json_item['Token'] = json_data
             save_json_item['avg_len'] = total_length/total_tokens if total_tokens > 0 else 0
@@ -95,9 +97,10 @@ def main(args):
             save_cur_hidden_states.append(cur_hidden_states)
             save_fake_last_hidden_states.append(fake_last_hidden_states)
             save_true_last_hidden_states.append(true_last_hidden_states)
+            storage.reset()
         
         # print()
-        print(tokenizer.decode(outputs[0]))
+        # print(tokenizer.decode(outputs[0]))
         # print(outputs[0][inputs["input_ids"].shape[-1]:])
     if args.profile:
         save_cur_hidden_states = torch.cat(save_cur_hidden_states, dim=0)

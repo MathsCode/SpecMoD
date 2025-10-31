@@ -27,7 +27,7 @@ class PathPredictorMLP(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-from model.qwen3_model import Spec_Qwen3ForCausalLM
+from model.qwen3_model_dev import Spec_Qwen3ForCausalLM
 
 model = Spec_Qwen3ForCausalLM.from_pretrained(f"/share/others/public_models/Qwen3-8B/")
 

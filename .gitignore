@@ -3,3 +3,4 @@ data/
 train_data/
 model/__pycache__
 .vscode/
+/train_data_backup

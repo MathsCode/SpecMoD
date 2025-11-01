@@ -65,11 +65,11 @@ def main(args):
     model.to("cuda")
 
     questions = load_questions(dataset_path,args.begin,args.end)
-    messages = [
-        {"role": "system",
-            "content": "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\n\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."},
-    ]
     for question in tqdm.tqdm(questions):
+        messages = [
+            {"role": "system",
+                "content": "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\n\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."},
+        ]
         prompt = question["turns"][0]
         messages.append({
             "role": "user",
@@ -94,6 +94,9 @@ def main(args):
             cur_hidden_states = torch.cat(cur_hidden_states, dim=0).cpu()
             fake_last_hidden_states = torch.cat(fake_last_hidden_states, dim=0).cpu()
             true_last_hidden_states = torch.cat(true_last_hidden_states, dim=0).cpu()
+            print(cur_hidden_states.shape)
+            print(fake_last_hidden_states.shape)
+            print(true_last_hidden_states.shape)
             save_cur_hidden_states.append(cur_hidden_states)
             save_fake_last_hidden_states.append(fake_last_hidden_states)
             save_true_last_hidden_states.append(true_last_hidden_states)

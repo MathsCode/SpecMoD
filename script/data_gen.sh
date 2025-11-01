@@ -1,7 +1,12 @@
-
-CUDA_VISIBLE_DEVICES=0 python data_generation.py -d mt-bench &
-CUDA_VISIBLE_DEVICES=1 python data_generation.py -d gsm8k &
-CUDA_VISIBLE_DEVICES=2 python data_generation.py -d alpaca &
-CUDA_VISIBLE_DEVICES=3 python data_generation.py -d sum &
-CUDA_VISIBLE_DEVICES=4 python data_generation.py -d vicuna-bench &
-CUDA_VISIBLE_DEVICES=5 python data_generation.py -d math_infini
+CUDA_VISIBLE_DEVICES=0 python data_generation.py --device qz  --profile --max_gen 1000 -d mt-bench -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=1 python data_generation.py --device qz  --profile --max_gen 1000 -d gsm8k -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=2 python data_generation.py --device qz  --profile --max_gen 1000 -d alpaca -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=3 python data_generation.py --device qz  --profile --max_gen 1000 -d sum -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=4 python data_generation.py --device qz  --profile --max_gen 1000 -d vicuna-bench -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=5 python data_generation.py --device qz  --profile --max_gen 1000 -d math_infini -m Qwen3-14B
+CUDA_VISIBLE_DEVICES=6 python data_generation.py --device qz  --profile --max_gen 1000 -d mt-bench -m Qwen3-8B
+CUDA_VISIBLE_DEVICES=6 python data_generation.py --device qz  --profile --max_gen 1000 -d gsm8k -m Qwen3-8B
+CUDA_VISIBLE_DEVICES=7 python data_generation.py --device qz  --profile --max_gen 1000 -d alpaca -m Qwen3-8B
+CUDA_VISIBLE_DEVICES=7 python data_generation.py --device qz  --profile --max_gen 1000 -d sum -m Qwen3-8B
+CUDA_VISIBLE_DEVICES=1 python data_generation.py --device qz  --profile --max_gen 1000 -d vicuna-bench -m Qwen3-8B
+CUDA_VISIBLE_DEVICES=2 python data_generation.py --device qz  --profile --max_gen 1000 -d math_infini -m Qwen3-8B

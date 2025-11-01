@@ -606,14 +606,14 @@ class Qwen3Model(Qwen3PreTrainedModel):
 
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
-
-        hidden_states = self.norm(hidden_states)
-
+                
         # add hidden states from the last decoder layer
         if output_hidden_states:
             all_hidden_states += (hidden_states,)
+            
+        hidden_states = self.norm(hidden_states)
 
-        storage.add_true_last_hidden_states(all_hidden_states[-1][:,-1:,:])
+        storage.add_true_last_hidden_states(hidden_states[:,-1:,:])
 
         # [xjm:] start dynamic programming for skipping layers
         
@@ -636,7 +636,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
                 # print(f"Layer {layer} dynamic programming:")
                 for budget in range(1, layer):
                     past_key_values_copy = copy.deepcopy(past_key_values_back)
-                    # print(f"Budget {budget}:")
+                    # print(f"Budget {budget}:")pa
                     # execute this layer
                     layer_outputs = self.layers[layer-1](
                         dp[layer-1][budget - 1],
@@ -674,7 +674,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
             logits_truth = lm_head(hidden_states)
             token_id_truth = torch.argmax(logits_truth[:,-1])
             # print(token_id, end=' ')
-            for budget in range(self.config.num_hidden_layers + 1):
+            for budget in range(self.config.num_hidden_layers+1):
                 cos_sim = torch.nn.functional.cosine_similarity(dp[self.config.num_hidden_layers][budget], all_hidden_states[self.config.num_hidden_layers], dim=-1).mean()
                 dp[self.config.num_hidden_layers][budget] = self.norm(dp[self.config.num_hidden_layers][budget])
                 logits_pred = lm_head(dp[self.config.num_hidden_layers][budget])
@@ -683,7 +683,6 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     json_item = {"layer_index": path[self.config.num_hidden_layers][budget], "similarity": cos_sim.item(), 'input_id': input_ids[0,-1].item(), 'output_id': token_id_pred.item()}
                     storage.add(json_item, budget, all_hidden_states[0], dp[self.config.num_hidden_layers][budget])
                     break
-            
             
             
                 # print(f"Budget {budget}: cos_sim {cos_sim.item():.6f}, pred_token_id {token_id_pred}, true_token_id {token_id_truth}, path {path[self.config.num_hidden_layers][budget]}")

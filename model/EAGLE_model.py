@@ -640,10 +640,10 @@ class Model(nn.Module):
             return hidden_states, next_decoder_cache
 
         return hidden_states
+    def reset_kv(self):
+        self.stable_kv = None
     @torch.no_grad()
-    def topK_genrate(self, hidden_states, input_ids, head, logits_processor):
-
-        input_ids = input_ids.to(hidden_states.device)
+    def topK_genrate(self, hidden_states, input_ids):
 
         input_ids = input_ids[:, 1:]
         input_ids = input_ids.to(hidden_states.device)

@@ -573,7 +573,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         import copy
         past_key_values_back = copy.deepcopy(past_key_values)
 
-        for decoder_layer in self.layers[: self.config.num_hidden_layers]:
+        for idx, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
 
@@ -613,7 +613,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
             
         hidden_states = self.norm(hidden_states)
 
-        storage.add_true_last_hidden_states(hidden_states[:,-1:,:])
+        storage.add_true_last_hidden_states(torch.cat([all_hidden_states[len(self.layers)-3], all_hidden_states[len(self.layers)//2], all_hidden_states[2]], dim =-1))
 
         # [xjm:] start dynamic programming for skipping layers
         

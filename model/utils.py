@@ -1,6 +1,7 @@
 from transformers.cache_utils import Cache, DynamicCache
 import torch
 from typing import List, Tuple
+from torch import nn as nn
 class DataStorage:
     def __init__(self):
         self.reset()
@@ -57,9 +58,7 @@ class DynamicBuffer(Cache):
             self.buffer.append(hidden_states)
             self._seen_tokens.append(hidden_states.shape[-2])
             self.position_embeddings.append(position_embeddings)
-        elif{
-            not self.buffer[layer_idx].numel()
-        }:
+        elif not self.buffer[layer_idx].numel():
             self.buffer[layer_idx] = hidden_states
             self.position_embeddings[layer_idx] = position_embeddings
         else:
@@ -137,7 +136,7 @@ class Spec_CausalLMOutputWithPast(ModelOutput):
     hidden_states: Optional[Tuple[torch.FloatTensor, ...]] = None
     attentions: Optional[Tuple[torch.FloatTensor, ...]] = None
     past_hidden_states: Optional[Tuple[Tuple[torch.FloatTensor]]] = None
-
+    last_hidden_state: Optional[torch.FloatTensor] = None
 
 @dataclass
 class Spec_BaseModelOutputWithPast(ModelOutput):
@@ -236,6 +235,9 @@ def Spec_update_model_kwargs_for_generation(
                     cache_name = possible_cache_name
                 model_kwargs[cache_name] = getattr(outputs, possible_cache_name)
 
+        if 'last_hidden_state' in model_kwargs:
+            model_kwargs['last_hidden_state'] = getattr(outputs, 'last_hidden_state')
+        
         # update token_type_ids with last value
         if "token_type_ids" in model_kwargs:
             token_type_ids = model_kwargs["token_type_ids"]
@@ -266,5 +268,22 @@ def Spec_update_model_kwargs_for_generation(
             ).to(past_positions.device)
             model_kwargs["cache_position"] = torch.cat((past_positions, new_positions))
         return model_kwargs
+    
+class PathPredictorMLP(nn.Module):
+    def __init__(self, n_layers, llm_hidden_dim, mlp_internal_dim):
+        super().__init__()
+        
+        self.input_dim = llm_hidden_dim 
+        self.output_dim = n_layers
+        
+        self.net = nn.Sequential(
+            nn.Linear(self.input_dim, mlp_internal_dim),
+            nn.ReLU(),
+            nn.LayerNorm(mlp_internal_dim), 
+            nn.Linear(mlp_internal_dim, self.output_dim)
+        )
+    
+    def forward(self, x):
+        return self.net(x)
 
 storage = DataStorage()

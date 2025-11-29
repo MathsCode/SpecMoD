@@ -5,31 +5,6 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 
 
-from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
-
-
-
-
-class PathPredictorMLP(nn.Module):
-    def __init__(self, n_layers, llm_hidden_dim, mlp_internal_dim):
-        super().__init__()
-        
-        self.input_dim = llm_hidden_dim 
-        self.output_dim = n_layers
-        
-        self.net = nn.Sequential(
-            nn.Linear(self.input_dim, mlp_internal_dim),
-            nn.ReLU(),
-            nn.LayerNorm(mlp_internal_dim), 
-            nn.Linear(mlp_internal_dim, self.output_dim)
-        )
-    
-    def forward(self, x):
-        return self.net(x)
-
-from model.qwen3_model_dev import Spec_Qwen3ForCausalLM
-
-
 
 MLP_INTERNAL_DIM = 1024 
 

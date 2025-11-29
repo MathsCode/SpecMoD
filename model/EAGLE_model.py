@@ -643,7 +643,7 @@ class Model(nn.Module):
     def reset_kv(self):
         self.stable_kv = None
     @torch.no_grad()
-    def topK_genrate(self, hidden_states, input_ids):
+    def topK_generate(self, hidden_states, input_ids):
 
         input_ids = input_ids[:, 1:]
         input_ids = input_ids.to(hidden_states.device)
@@ -656,7 +656,7 @@ class Model(nn.Module):
         else:
             out_hidden, past_key_values = self(hidden_states, input_ids=input_ids, use_cache=True)
         self.stable_kv = past_key_values
-        last_hidden = out_hidden[:, -1]
+        last_hidden = out_hidden[:, -1:]
         last_hidden = self.norm(last_hidden)
         return last_hidden
 

@@ -71,7 +71,7 @@ def main(args):
             input_ids = torch.cat((input_ids, input_id), dim=1)
             # print(input_ids.shape)
             # print(last_hidden_state.shape)
-            spec_hidden_states = spec_model.topK_genrate(
+            spec_hidden_states = spec_model.topK_generate(
                 hidden_states=last_hidden_state,
                 input_ids=input_ids
             )

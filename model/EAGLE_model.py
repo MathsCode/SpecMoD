@@ -656,9 +656,9 @@ class Model(nn.Module):
         else:
             out_hidden, past_key_values = self(hidden_states, input_ids=input_ids, use_cache=True)
         self.stable_kv = past_key_values
-        last_hidden = out_hidden[:, -1:]
-        last_hidden = self.norm(last_hidden)
-        return last_hidden
+        out_hidden = out_hidden[:, -1:]
+        out_hidden = self.norm(out_hidden)
+        return out_hidden
 
     @classmethod
     def from_pretrained(

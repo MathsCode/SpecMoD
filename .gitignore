@@ -6,3 +6,7 @@ model/__pycache__
 /train_data_backup
 /router
 *.txt
+/log
+/checkpoint
+/deprecated
+/output

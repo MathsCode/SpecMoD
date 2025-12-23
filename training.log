@@ -1,0 +1,450 @@
+nohup: ignoring input
+W1217 06:55:12.127000 3110219 site-packages/torch/distributed/run.py:803] 
+W1217 06:55:12.127000 3110219 site-packages/torch/distributed/run.py:803] *****************************************
+W1217 06:55:12.127000 3110219 site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1217 06:55:12.127000 3110219 site-packages/torch/distributed/run.py:803] *****************************************
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+12/17/2025 06:55:18 - INFO - __main__ - 正在加载基础模型: /inspire/hdd/global_public/public_models/Qwen/Qwen3-8B/ ...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.43s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.39s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.42s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.42s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.47s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.41s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.42s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:14,  3.73s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.42s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.43s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.45s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.44s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.42s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.43s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.44s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:07<00:11,  3.68s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.36s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.38s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.38s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.39s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.39s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.40s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.39s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:07,  3.62s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.07s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.12s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.12s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.11s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.12s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.12s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.12s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.30s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.74s/it]
+12/17/2025 06:55:31 - INFO - __main__ - 初始化 Adapters...
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.29s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.78s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.77s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.79s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.78s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.78s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:13<00:00,  2.77s/it]
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:32 - INFO - __main__ - 初始化 Adapters...
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.45s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.94s/it]
+12/17/2025 06:55:33 - INFO - __main__ - 初始化 Adapters...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:48 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:49 - INFO - __main__ - Loading pretrained adapters from /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048/...
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 0
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:49 - INFO - __main__ - Loaded Adapter Layer 1
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:51 - INFO - __main__ - Loaded Adapter Layer 2
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:52 - INFO - __main__ - Loaded Adapter Layer 3
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:54 - INFO - __main__ - Loaded Adapter Layer 4
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:55 - INFO - __main__ - Loaded Adapter Layer 5
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 6
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:56 - INFO - __main__ - Loaded Adapter Layer 7
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:57 - INFO - __main__ - Loaded Adapter Layer 8
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 9
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:55:58 - INFO - __main__ - Loaded Adapter Layer 10
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:00 - INFO - __main__ - Loaded Adapter Layer 11
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:01 - INFO - __main__ - Loaded Adapter Layer 12
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:02 - INFO - __main__ - Loaded Adapter Layer 13
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:03 - INFO - __main__ - Loaded Adapter Layer 14
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:05 - INFO - __main__ - Loaded Adapter Layer 15
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:06 - INFO - __main__ - Loaded Adapter Layer 16
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:08 - INFO - __main__ - Loaded Adapter Layer 17
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:09 - INFO - __main__ - Loaded Adapter Layer 18
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:12 - INFO - __main__ - Loaded Adapter Layer 19
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:13 - INFO - __main__ - Loaded Adapter Layer 20
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:15 - INFO - __main__ - Loaded Adapter Layer 21
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:17 - INFO - __main__ - Loaded Adapter Layer 22
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:18 - INFO - __main__ - Loaded Adapter Layer 23
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 24
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:19 - INFO - __main__ - Loaded Adapter Layer 25
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:20 - INFO - __main__ - Loaded Adapter Layer 26
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:22 - INFO - __main__ - Loaded Adapter Layer 27
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:23 - INFO - __main__ - Loaded Adapter Layer 28
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:25 - INFO - __main__ - Loaded Adapter Layer 29
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 30
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:26 - INFO - __main__ - Loaded Adapter Layer 31
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:27 - INFO - __main__ - Loaded Adapter Layer 32
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:28 - INFO - __main__ - Loaded Adapter Layer 33
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:29 - INFO - __main__ - Loaded Adapter Layer 34
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:30 - INFO - __main__ - Loaded Adapter Layer 35
+12/17/2025 06:56:34 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+12/17/2025 06:56:35 - INFO - __main__ - Starting training...
+  0%|          | 0/174 [00:00<?, ?it/s]You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+  1%|          | 1/174 [00:20<59:14, 20.54s/it]  1%|          | 2/174 [00:21<25:08,  8.77s/it]  2%|▏         | 3/174 [00:21<13:56,  4.89s/it]  2%|▏         | 4/174 [00:21<08:35,  3.03s/it]  3%|▎         | 5/174 [00:21<05:39,  2.01s/it]  3%|▎         | 6/174 [00:21<03:53,  1.39s/it]  4%|▍         | 7/174 [00:22<02:47,  1.00s/it]  5%|▍         | 8/174 [00:22<02:03,  1.35it/s]  5%|▌         | 9/174 [00:22<01:33,  1.76it/s]  6%|▌         | 10/174 [00:22<01:14,  2.21it/s]                                                {'loss': 6.177, 'grad_norm': 43.1676025390625, 'learning_rate': 3.888888888888889e-05, 'epoch': 0.17}
+  6%|▌         | 10/174 [00:22<01:14,  2.21it/s]  6%|▋         | 11/174 [00:22<01:03,  2.57it/s]  7%|▋         | 12/174 [00:23<00:53,  3.03it/s]  7%|▋         | 13/174 [00:23<00:49,  3.23it/s]  8%|▊         | 14/174 [00:23<00:46,  3.41it/s]  9%|▊         | 15/174 [00:23<00:43,  3.68it/s]  9%|▉         | 16/174 [00:24<00:40,  3.87it/s] 10%|▉         | 17/174 [00:24<00:39,  3.98it/s] 10%|█         | 18/174 [00:24<00:35,  4.34it/s] 11%|█         | 19/174 [00:24<00:33,  4.64it/s] 11%|█▏        | 20/174 [00:24<00:34,  4.45it/s]                                                {'loss': 5.2104, 'grad_norm': 26.44367790222168, 'learning_rate': 9.444444444444444e-05, 'epoch': 0.34}
+ 11%|█▏        | 20/174 [00:24<00:34,  4.45it/s] 12%|█▏        | 21/174 [00:25<00:32,  4.68it/s] 13%|█▎        | 22/174 [00:25<00:31,  4.82it/s] 13%|█▎        | 23/174 [00:25<00:29,  5.06it/s] 14%|█▍        | 24/174 [00:25<00:30,  4.89it/s] 14%|█▍        | 25/174 [00:25<00:29,  5.09it/s] 15%|█▍        | 26/174 [00:26<00:31,  4.76it/s] 16%|█▌        | 27/174 [00:26<00:31,  4.71it/s] 16%|█▌        | 28/174 [00:26<00:29,  4.92it/s] 17%|█▋        | 29/174 [00:26<00:31,  4.62it/s] 17%|█▋        | 30/174 [00:27<00:32,  4.38it/s]                                                {'loss': 5.5471, 'grad_norm': 27.693302154541016, 'learning_rate': 9.918099534735718e-05, 'epoch': 0.52}
+ 17%|█▋        | 30/174 [00:27<00:32,  4.38it/s] 18%|█▊        | 31/174 [00:27<00:30,  4.63it/s] 18%|█▊        | 32/174 [00:27<00:29,  4.75it/s] 19%|█▉        | 33/174 [00:27<00:28,  4.89it/s] 20%|█▉        | 34/174 [00:27<00:27,  5.06it/s] 20%|██        | 35/174 [00:28<00:30,  4.56it/s] 21%|██        | 36/174 [00:28<00:31,  4.35it/s] 21%|██▏       | 37/174 [00:28<00:29,  4.61it/s] 22%|██▏       | 38/174 [00:28<00:29,  4.59it/s] 22%|██▏       | 39/174 [00:28<00:27,  4.88it/s] 23%|██▎       | 40/174 [00:29<00:27,  4.95it/s]                                                {'loss': 5.8788, 'grad_norm': 34.595619201660156, 'learning_rate': 9.638429754970715e-05, 'epoch': 0.69}
+ 23%|██▎       | 40/174 [00:29<00:27,  4.95it/s] 24%|██▎       | 41/174 [00:29<00:29,  4.51it/s] 24%|██▍       | 42/174 [00:29<00:27,  4.79it/s] 25%|██▍       | 43/174 [00:29<00:29,  4.41it/s] 25%|██▌       | 44/174 [00:30<00:31,  4.10it/s] 26%|██▌       | 45/174 [00:30<00:30,  4.27it/s] 26%|██▋       | 46/174 [00:30<00:27,  4.60it/s] 27%|██▋       | 47/174 [00:30<00:26,  4.77it/s] 28%|██▊       | 48/174 [00:30<00:25,  5.00it/s] 28%|██▊       | 49/174 [00:31<00:24,  5.13it/s] 29%|██▊       | 50/174 [00:31<00:26,  4.72it/s]                                                {'loss': 5.9872, 'grad_norm': 3.8594841957092285, 'learning_rate': 9.171280693414307e-05, 'epoch': 0.86}
+ 29%|██▊       | 50/174 [00:31<00:26,  4.72it/s] 29%|██▉       | 51/174 [00:31<00:25,  4.87it/s] 30%|██▉       | 52/174 [00:31<00:23,  5.13it/s] 30%|███       | 53/174 [00:31<00:24,  4.94it/s] 31%|███       | 54/174 [00:32<00:23,  5.09it/s] 32%|███▏      | 55/174 [00:32<00:22,  5.22it/s] 32%|███▏      | 56/174 [00:32<00:23,  5.09it/s] 33%|███▎      | 57/174 [00:32<00:22,  5.26it/s] 33%|███▎      | 58/174 [00:33<00:41,  2.80it/s]You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+ 34%|███▍      | 59/174 [00:50<10:22,  5.41s/it] 34%|███▍      | 60/174 [00:50<07:17,  3.84s/it]                                                {'loss': 5.9403, 'grad_norm': 6.101648330688477, 'learning_rate': 8.535533905932738e-05, 'epoch': 1.03}
+ 34%|███▍      | 60/174 [00:50<07:17,  3.84s/it] 35%|███▌      | 61/174 [00:50<05:12,  2.76s/it] 36%|███▌      | 62/174 [00:51<03:45,  2.01s/it] 36%|███▌      | 63/174 [00:51<02:42,  1.46s/it] 37%|███▋      | 64/174 [00:51<01:58,  1.08s/it] 37%|███▋      | 65/174 [00:51<01:27,  1.24it/s] 38%|███▊      | 66/174 [00:51<01:07,  1.59it/s] 39%|███▊      | 67/174 [00:52<00:53,  2.01it/s] 39%|███▉      | 68/174 [00:52<00:44,  2.37it/s] 40%|███▉      | 69/174 [00:52<00:36,  2.87it/s] 40%|████      | 70/174 [00:52<00:31,  3.34it/s]                                                {'loss': 5.8253, 'grad_norm': 2.5131113529205322, 'learning_rate': 7.756885448608459e-05, 'epoch': 1.21}
+ 40%|████      | 70/174 [00:52<00:31,  3.34it/s] 41%|████      | 71/174 [00:52<00:27,  3.77it/s] 41%|████▏     | 72/174 [00:53<00:23,  4.30it/s] 42%|████▏     | 73/174 [00:53<00:21,  4.66it/s] 43%|████▎     | 74/174 [00:53<00:20,  4.92it/s] 43%|████▎     | 75/174 [00:53<00:20,  4.92it/s] 44%|████▎     | 76/174 [00:53<00:21,  4.53it/s] 44%|████▍     | 77/174 [00:54<00:21,  4.53it/s] 45%|████▍     | 78/174 [00:54<00:19,  4.83it/s] 45%|████▌     | 79/174 [00:54<00:19,  4.91it/s] 46%|████▌     | 80/174 [00:54<00:18,  5.11it/s]                                                {'loss': 5.9541, 'grad_norm': 12.37441349029541, 'learning_rate': 6.866807276663106e-05, 'epoch': 1.38}
+ 46%|████▌     | 80/174 [00:54<00:18,  5.11it/s] 47%|████▋     | 81/174 [00:54<00:19,  4.70it/s] 47%|████▋     | 82/174 [00:55<00:20,  4.49it/s] 48%|████▊     | 83/174 [00:55<00:19,  4.73it/s] 48%|████▊     | 84/174 [00:55<00:21,  4.11it/s] 49%|████▉     | 85/174 [00:55<00:19,  4.50it/s] 49%|████▉     | 86/174 [00:56<00:19,  4.47it/s] 50%|█████     | 87/174 [00:56<00:18,  4.78it/s] 51%|█████     | 88/174 [00:56<00:17,  4.99it/s] 51%|█████     | 89/174 [00:56<00:17,  4.74it/s] 52%|█████▏    | 90/174 [00:56<00:18,  4.47it/s]                                                {'loss': 6.0081, 'grad_norm': 10.523985862731934, 'learning_rate': 5.90127518906953e-05, 'epoch': 1.55}
+ 52%|█████▏    | 90/174 [00:56<00:18,  4.47it/s] 52%|█████▏    | 91/174 [00:57<00:17,  4.78it/s] 53%|█████▎    | 92/174 [00:57<00:16,  4.89it/s] 53%|█████▎    | 93/174 [00:57<00:16,  4.96it/s] 54%|█████▍    | 94/174 [00:57<00:15,  5.16it/s] 55%|█████▍    | 95/174 [00:57<00:17,  4.64it/s] 55%|█████▌    | 96/174 [00:58<00:18,  4.21it/s] 56%|█████▌    | 97/174 [00:58<00:16,  4.57it/s] 56%|█████▋    | 98/174 [00:58<00:15,  4.86it/s] 57%|█████▋    | 99/174 [00:58<00:15,  4.99it/s] 57%|█████▋    | 100/174 [00:58<00:14,  5.17it/s]                                                 {'loss': 5.8559, 'grad_norm': 7.735353469848633, 'learning_rate': 4.899314733672799e-05, 'epoch': 1.72}
+ 57%|█████▋    | 100/174 [00:58<00:14,  5.17it/s] 58%|█████▊    | 101/174 [01:45<16:59, 13.96s/it] 59%|█████▊    | 102/174 [01:45<11:48,  9.84s/it] 59%|█████▉    | 103/174 [01:45<08:12,  6.94s/it] 60%|█████▉    | 104/174 [01:45<05:45,  4.93s/it] 60%|██████    | 105/174 [01:45<04:03,  3.53s/it] 61%|██████    | 106/174 [01:46<02:51,  2.53s/it] 61%|██████▏   | 107/174 [01:46<02:01,  1.82s/it] 62%|██████▏   | 108/174 [01:46<01:27,  1.33s/it] 63%|██████▎   | 109/174 [01:46<01:03,  1.02it/s] 63%|██████▎   | 110/174 [01:46<00:48,  1.31it/s]                                                 {'loss': 5.7113, 'grad_norm': 11.906188011169434, 'learning_rate': 3.901423845438916e-05, 'epoch': 1.9}
+ 63%|██████▎   | 110/174 [01:46<00:48,  1.31it/s] 64%|██████▍   | 111/174 [01:47<00:37,  1.67it/s] 64%|██████▍   | 112/174 [01:47<00:30,  2.01it/s] 65%|██████▍   | 113/174 [01:47<00:25,  2.36it/s] 66%|██████▌   | 114/174 [01:47<00:21,  2.85it/s] 66%|██████▌   | 115/174 [01:48<00:17,  3.36it/s] 67%|██████▋   | 116/174 [01:48<00:25,  2.31it/s]You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+ 67%|██████▋   | 117/174 [02:35<13:36, 14.33s/it]You're using a Qwen2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+ 68%|██████▊   | 118/174 [02:35<09:24, 10.08s/it] 68%|██████▊   | 119/174 [02:35<06:32,  7.13s/it] 69%|██████▉   | 120/174 [02:36<04:34,  5.08s/it]                                                 {'loss': 5.8889, 'grad_norm': 2.5982136726379395, 'learning_rate': 2.9479359727362173e-05, 'epoch': 2.07}
+ 69%|██████▉   | 120/174 [02:36<04:34,  5.08s/it] 70%|██████▉   | 121/174 [02:36<03:12,  3.64s/it] 70%|███████   | 122/174 [02:36<02:15,  2.60s/it] 71%|███████   | 123/174 [02:36<01:35,  1.88s/it] 71%|███████▏  | 124/174 [02:37<01:08,  1.38s/it] 72%|███████▏  | 125/174 [02:37<00:50,  1.02s/it] 72%|███████▏  | 126/174 [02:37<00:37,  1.29it/s] 73%|███████▎  | 127/174 [02:37<00:28,  1.68it/s] 74%|███████▎  | 128/174 [02:37<00:21,  2.12it/s] 74%|███████▍  | 129/174 [02:38<00:17,  2.58it/s] 75%|███████▍  | 130/174 [02:38<00:15,  2.79it/s]                                                 {'loss': 5.7697, 'grad_norm': 1.0834077596664429, 'learning_rate': 2.077389851950557e-05, 'epoch': 2.24}
+ 75%|███████▍  | 130/174 [02:38<00:15,  2.79it/s] 75%|███████▌  | 131/174 [02:38<00:13,  3.30it/s] 76%|███████▌  | 132/174 [02:38<00:11,  3.74it/s] 76%|███████▋  | 133/174 [02:38<00:09,  4.17it/s] 77%|███████▋  | 134/174 [02:39<00:09,  4.38it/s] 78%|███████▊  | 135/174 [02:39<00:09,  4.31it/s] 78%|███████▊  | 136/174 [02:39<00:08,  4.24it/s] 79%|███████▊  | 137/174 [02:39<00:08,  4.57it/s] 79%|███████▉  | 138/174 [02:39<00:07,  4.75it/s] 80%|███████▉  | 139/174 [02:40<00:07,  4.47it/s] 80%|████████  | 140/174 [02:40<00:07,  4.77it/s]                                                 {'loss': 5.7683, 'grad_norm': 4.161756992340088, 'learning_rate': 1.3249718220183583e-05, 'epoch': 2.41}
+ 80%|████████  | 140/174 [02:40<00:07,  4.77it/s] 81%|████████  | 141/174 [02:40<00:07,  4.46it/s] 82%|████████▏ | 142/174 [02:40<00:07,  4.25it/s] 82%|████████▏ | 143/174 [02:41<00:06,  4.62it/s] 83%|████████▎ | 144/174 [02:41<00:06,  4.79it/s] 83%|████████▎ | 145/174 [02:41<00:06,  4.78it/s] 84%|████████▍ | 146/174 [02:41<00:06,  4.54it/s] 84%|████████▍ | 147/174 [02:41<00:05,  4.65it/s] 85%|████████▌ | 148/174 [02:42<00:05,  4.48it/s] 86%|████████▌ | 149/174 [02:42<00:05,  4.50it/s] 86%|████████▌ | 150/174 [02:42<00:05,  4.07it/s]                                                 {'loss': 5.1117, 'grad_norm': 4.872644901275635, 'learning_rate': 7.21093638492763e-06, 'epoch': 2.59}
+ 86%|████████▌ | 150/174 [02:42<00:05,  4.07it/s] 87%|████████▋ | 151/174 [02:42<00:05,  4.44it/s] 87%|████████▋ | 152/174 [02:43<00:04,  4.48it/s] 88%|████████▊ | 153/174 [02:43<00:04,  4.53it/s] 89%|████████▊ | 154/174 [02:43<00:04,  4.37it/s] 89%|████████▉ | 155/174 [02:43<00:04,  4.68it/s] 90%|████████▉ | 156/174 [02:43<00:04,  4.30it/s] 90%|█████████ | 157/174 [02:44<00:03,  4.64it/s] 91%|█████████ | 158/174 [02:44<00:03,  4.88it/s] 91%|█████████▏| 159/174 [02:44<00:02,  5.09it/s] 92%|█████████▏| 160/174 [02:44<00:03,  3.74it/s]                                                 {'loss': 5.5009, 'grad_norm': 5.947746276855469, 'learning_rate': 2.901632700436757e-06, 'epoch': 2.76}
+ 92%|█████████▏| 160/174 [02:44<00:03,  3.74it/s] 93%|█████████▎| 161/174 [02:45<00:03,  4.15it/s] 93%|█████████▎| 162/174 [02:45<00:02,  4.09it/s] 94%|█████████▎| 163/174 [02:45<00:02,  4.08it/s] 94%|█████████▍| 164/174 [02:45<00:02,  4.47it/s] 95%|█████████▍| 165/174 [02:45<00:01,  4.80it/s] 95%|█████████▌| 166/174 [02:46<00:01,  5.03it/s] 96%|█████████▌| 167/174 [02:46<00:01,  5.09it/s] 97%|█████████▋| 168/174 [02:46<00:01,  5.21it/s] 97%|█████████▋| 169/174 [02:46<00:00,  5.29it/s] 98%|█████████▊| 170/174 [02:46<00:00,  5.30it/s]                                                 {'loss': 6.0431, 'grad_norm': 8.697230339050293, 'learning_rate': 4.959836019417963e-07, 'epoch': 2.93}
+ 98%|█████████▊| 170/174 [02:46<00:00,  5.30it/s] 98%|█████████▊| 171/174 [02:47<00:00,  5.37it/s] 99%|█████████▉| 172/174 [02:47<00:00,  4.99it/s] 99%|█████████▉| 173/174 [02:47<00:00,  5.14it/s]100%|██████████| 174/174 [02:48<00:00,  2.63it/s]                                                 {'train_runtime': 212.8399, 'train_samples_per_second': 6.484, 'train_steps_per_second': 0.818, 'train_loss': 5.769398459072771, 'epoch': 3.0}
+100%|██████████| 174/174 [03:32<00:00,  2.63it/s]100%|██████████| 174/174 [03:32<00:00,  1.22s/it]
+12/17/2025 07:00:10 - INFO - __main__ - Saving adapters to /inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/adaptor/2048_finetune/final_adapters_2048_20251217_0700.pt
+[rank0]:[W1217 07:00:13.822894196 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

@@ -13,6 +13,8 @@ class DataStorage:
         self._true_last_hidden_states = []
         self._fake_last_hidden_states = []
         self._cur_hidden_states = []
+        self.train_x = []
+        self.train_y = []
     
     def add(self, json_item, length, cur_hidden_states, fake_last_hidden_states):
         self._json_data.append(json_item)
@@ -24,6 +26,16 @@ class DataStorage:
         self._true_last_hidden_states.append(true_last_hidden_states)
     def get_data(self):
         return self._json_data.copy(), self._cur_hidden_states, self._fake_last_hidden_states, self._true_last_hidden_states, self._total_length, self._total_tokens
+    
+    def add_train_data(self, x, y, layer_id):
+        while len(self.train_x) <= layer_id:
+            self.train_x.append([])
+            self.train_y.append([])
+        self.train_x[layer_id].append(x)
+        self.train_y[layer_id].append(y)
+    def get_train_data(self):
+        return self.train_x, self.train_y
+        
 
 class DynamicBuffer(Cache):
     def __init__(self):
@@ -285,5 +297,76 @@ class PathPredictorMLP(nn.Module):
     
     def forward(self, x):
         return self.net(x)
+
+from transformers.models.qwen3.modeling_qwen3 import Qwen3RMSNorm
+
+
+class ShadowAdapter2(nn.Module):
+    def __init__(self, hidden_dim, bottleneck_dim=64):
+        """
+        Args:
+            hidden_dim: 原模型 Hidden Size (e.g., Llama-3-8B is 4096)
+            bottleneck_dim: 压缩后的维度 (e.g., 64 or 128), 越小越快
+        """
+        super().__init__()
+        # 下投影：把维度压下去
+        self.down_proj = nn.Linear(hidden_dim, bottleneck_dim, bias=False)
+        # 激活函数：保持和 Llama 一致 (SiLU)
+        self.act = nn.SiLU()
+        # 上投影：把维度升回来
+        self.up_proj = nn.Linear(bottleneck_dim, hidden_dim, bias=False)
+        
+        # 【关键技巧】零初始化 (Zero Initialization)
+        # 让 up_proj 的权重一开始全是 0。
+        # 这样初始时: Adapter(x) = 0, Output = x + 0 = x (完美透传)
+        # 训练开始后，它会慢慢学到非 0 的修正值。
+        
+        nn.init.zeros_(self.up_proj.weight)
+        
+        # down_proj 正常随机初始化即可
+        nn.init.kaiming_normal_(self.down_proj.weight, nonlinearity='linear')
+
+    def forward(self, x):
+        # 注意：这里我们只计算 Delta (残差部分)
+        # 最终输出应该是 x + adapter(x)，在训练循环里加
+        return self.up_proj(self.act(self.down_proj(x)))
+    
+    
+class ShadowAdapter3(nn.Module):
+    def __init__(self, hidden_dim, bottleneck_dim=64):
+        """
+        Args:
+            hidden_dim: 原模型 Hidden Size (e.g., Llama-3-8B is 4096)
+            bottleneck_dim: 压缩后的维度 (e.g., 64 or 128), 越小越快
+        """
+        super().__init__()
+        self.norm = Qwen3RMSNorm(hidden_dim)
+        self.gate_proj = nn.Linear(hidden_dim, bottleneck_dim, bias=False)
+        self.up_proj   = nn.Linear(hidden_dim, bottleneck_dim, bias=False)
+        self.down_proj = nn.Linear(bottleneck_dim, hidden_dim, bias=False)
+        self.act_fn = nn.SiLU()
+        self.gate_scale = nn.Parameter(torch.zeros(1))
+        # 【关键技巧】零初始化 (Zero Initialization)
+        # 让 up_proj 的权重一开始全是 0。
+        # 这样初始时: Adapter(x) = 0, Output = x + 0 = x (完美透传)
+        # 训练开始后，它会慢慢学到非 0 的修正值。
+        
+        nn.init.zeros_(self.up_proj.weight)
+        nn.init.kaiming_normal_(self.gate_proj.weight, a=0.2)
+        nn.init.kaiming_normal_(self.up_proj.weight, a=0.2)
+        nn.init.xavier_normal_(self.down_proj.weight)
+
+    def forward(self, x):
+        x_norm = self.norm(x)
+        
+        # 2. SwiGLU 计算
+        # 公式: (SiLU(Gate) * Up) -> Down
+        gate = self.act_fn(self.gate_proj(x_norm))
+        up = self.up_proj(x_norm)
+        inter = gate * up
+        out = self.down_proj(inter)
+        return self.gate_scale*out
+
+
 
 storage = DataStorage()

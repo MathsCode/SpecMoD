@@ -530,6 +530,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         token_id_truth = None,
         lm_head = None,
         exec_layer_list = None,
+        adaptor = None,
         **flash_attn_kwargs: Unpack[FlashAttentionKwargs],
     ) -> BaseModelOutputWithPast:
         if self.input_ids == None:
@@ -615,9 +616,11 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     flag = True if exec_layer_list == None or exec_layer_list == [] or decoder_layer.layer_index in exec_layer_list  else False,
                     **flash_attn_kwargs,
                 )
-            
             hidden_states = layer_outputs[0]
-        
+            if exec_layer_list != None and exec_layer_list != []:
+                if decoder_layer.layer_index not in exec_layer_list:
+                    hidden_states = hidden_states + adaptor[decoder_layer.layer_index](hidden_states)
+    
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
 
@@ -650,7 +653,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     # print(f"Layer {layer} dynamic programming:")
                     for budget in range(1, layer):
                         past_key_values_copy = copy.deepcopy(past_key_values_back)
-                        # print(f"Budget {budget}:")pa
+                        # print(f"Budget {budget}:")
                         # execute this layer
                         layer_outputs = self.layers[layer-1](
                             dp[layer-1][budget - 1],
@@ -667,7 +670,9 @@ class Qwen3Model(Qwen3PreTrainedModel):
                         cos_sim_exec = torch.nn.functional.cosine_similarity(layer_outputs[0], all_hidden_states[layer], dim=-1).mean()
                         # cos_sim_exec = 1/(1+torch.nn.functional.mse_loss(layer_outputs[0], all_hidden_states[layer]))
                         # skip this layer
-                        cos_sim_skip = torch.nn.functional.cosine_similarity(dp[layer-1][budget], all_hidden_states[layer], dim=-1).mean()
+                        adaptor_output = dp[layer-1][budget] + adaptor[layer-1](dp[layer-1][budget])
+                        
+                        cos_sim_skip = torch.nn.functional.cosine_similarity(adaptor_output, all_hidden_states[layer], dim=-1).mean()
                         # cos_sim_skip = 1/(1+torch.nn.functional.mse_loss(dp[layer-1][budget], all_hidden_states[layer]))
 
                         if cos_sim_exec >= cos_sim_skip:
@@ -677,7 +682,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
                             path[layer][budget].append(layer-1)
                             # print("if:", path[layer][budget])
                         else:
-                            dp[layer][budget] = dp[layer-1][budget]
+                            dp[layer][budget] = adaptor_output
                             # print("else:", path[layer-1][budget])
                             path[layer][budget] = path[layer-1][budget].copy()
                             # print("else:", path[layer][budget])
@@ -687,7 +692,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
 
                 
                 logits_truth = lm_head(hidden_states)
-                token_id_truth_pred = torch.argmax(logits_truth[:,-1])
+                token_id_truth_fake = torch.argmax(logits_truth[:,-1])
                 # print(token_id, end=' ')
                 for budget in range(self.config.num_hidden_layers+1):
                     cos_sim = torch.nn.functional.cosine_similarity(dp[self.config.num_hidden_layers][budget], all_hidden_states[self.config.num_hidden_layers], dim=-1).mean()
@@ -695,9 +700,10 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     dp[self.config.num_hidden_layers][budget] = self.norm(dp[self.config.num_hidden_layers][budget])
                     logits_pred = lm_head(dp[self.config.num_hidden_layers][budget])
                     token_id_pred = torch.argmax(logits_pred[:,-1])
-                    if token_id_pred == token_id_truth_pred:
-                        # json_item = {"layer_index": path[self.config.num_hidden_layers][budget], "similarity": cos_sim.item(), 'input_id': input_ids[0,-1].item(), 'output_id': token_id_pred.item()}
+                    if token_id_pred == token_id_truth_fake:
+                        json_item = {"layer_index": path[self.config.num_hidden_layers][budget], "similarity": cos_sim.item(), 'input_id': input_ids[0,-1].item(), 'output_id': token_id_pred.item()}
                         # storage.add(json_item, budget, all_hidden_states[0], dp[self.config.num_hidden_layers][budget])
+                        storage.add(json_item, budget, None, None)
                         exec_layer_list.append(path[self.config.num_hidden_layers][budget])
                         print(f"Budget {budget}: cos_sim {cos_sim.item():.6f}, pred_token_id {token_id_pred}, true_token_id {token_id_truth}, path {path[self.config.num_hidden_layers][budget]}")
                         break
@@ -915,6 +921,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
         output_hidden_states: Optional[bool] = None,
         cache_position: Optional[torch.LongTensor] = None,
         logits_to_keep: Union[int, torch.Tensor] = 0,
+        adaptor = None,
         **kwargs: Unpack[KwargsForCausalLM],
     ) -> CausalLMOutputWithPast:
         r"""
@@ -972,7 +979,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 **kwargs,
             )
             all_hidden_states = outputs.hidden_states
-            # storage.add_true_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
+            storage.add_true_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
             past_key_values_full = outputs.past_key_values
             past_key_values_skip = copy.deepcopy(past_key_values_full)
         else:
@@ -1015,10 +1022,12 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 token_id_truth = token_id_truth,
                 lm_head = self.lm_head,
                 exec_layer_list = exec_layer_list,
+                adaptor = adaptor,
                 **kwargs,
             )
             
-            
+            # update KV Cache
+            print(exec_layer_list[0])
             outputs: BaseModelOutputWithPast = self.model(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
@@ -1031,11 +1040,12 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 cache_position=cache_position,
                 is_dp = False,
                 exec_layer_list = exec_layer_list[0],
+                adaptor = adaptor,
                 **kwargs,
             )
             past_key_values_skip = outputs.past_key_values
-            all_hidden_states = outputs.hidden_states
-            # storage.add_true_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
+            all_hidden_states = outputs.hidden_states 
+            storage.add_true_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
             
             
             
@@ -1056,6 +1066,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
             loss=loss,
             logits=logits,
             past_key_values=(past_key_values_full, past_key_values_skip),
+            # past_key_values=past_key_values,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )

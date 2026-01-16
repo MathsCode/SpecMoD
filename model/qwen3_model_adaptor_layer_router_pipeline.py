@@ -53,7 +53,7 @@ from transformers.utils import (
 )
 from transformers.utils.deprecation import deprecate_kwarg
 from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
-from .utils import record
+
 
 import copy
 
@@ -63,7 +63,7 @@ _CHECKPOINT_FOR_DOC = "Qwen/Qwen3-8B"
 _CONFIG_FOR_DOC = "Qwen3Config"
 
 
-
+from .utils import record
 
 
 
@@ -525,10 +525,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         output_hidden_states: Optional[bool] = None,
         cache_position: Optional[torch.LongTensor] = None,
         # [xjm:] add skip layer list
-        is_dp: Optional[bool] = None,
-        token_id_truth = None,
-        lm_head = None,
-        exec_layer_list = None,
+        router = None,
         adaptor = None,
         **flash_attn_kwargs: Unpack[FlashAttentionKwargs],
     ) -> BaseModelOutputWithPast:
@@ -585,11 +582,17 @@ class Qwen3Model(Qwen3PreTrainedModel):
         all_hidden_states = () if output_hidden_states else None
         all_self_attns = () if output_attentions else None
         
-        past_key_values_back = copy.deepcopy(past_key_values)
         forced_list = [0, 1, 34, 35]
+        # exec_layer = []
         for decoder_layer in self.layers[: self.config.num_hidden_layers]:
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
+            
+            logits = 1
+            if hidden_states.shape[1] == 1 and decoder_layer.layer_index not in forced_list:
+                # print(decoder_layer.layer_index)
+                logits = torch.sigmoid(router[decoder_layer.layer_index](hidden_states))
+                # print(logits)
             if self.gradient_checkpointing and self.training:
                 layer_outputs = self._gradient_checkpointing_func(
                     partial(decoder_layer.__call__, **flash_attn_kwargs),
@@ -612,14 +615,16 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     use_cache=use_cache,
                     cache_position=cache_position,
                     position_embeddings=position_embeddings,
-                    flag = True if exec_layer_list == None or exec_layer_list == [] or decoder_layer.layer_index in forced_list or decoder_layer.layer_index in exec_layer_list  else False,
+                    flag = True if logits >= 0.5  else False,
                     **flash_attn_kwargs,
                 )
             hidden_states = layer_outputs[0]
-            if exec_layer_list != None and exec_layer_list != []:
-                if decoder_layer.layer_index not in exec_layer_list and decoder_layer.layer_index not in forced_list:
-                    hidden_states = hidden_states + adaptor[decoder_layer.layer_index](hidden_states)
-    
+            if logits >= 0.5:
+                # exec_layer.append(decoder_layer.layer_index)
+                record.add(decoder_layer.layer_index)
+            else:
+                hidden_states = hidden_states + adaptor[decoder_layer.layer_index](hidden_states)
+
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
 
@@ -628,134 +633,11 @@ class Qwen3Model(Qwen3PreTrainedModel):
             all_hidden_states += (hidden_states,)
         hidden_states = self.norm(hidden_states)
 
+        # print(len(exec_layer))
         
 
         
-            
-
-        if is_dp:
-            json_item = {}
-            if inputs_embeds.shape[1] == 1:
-                dp = [[0 for _ in range(self.config.num_hidden_layers + 1 - len(forced_list))] for _ in range(self.config.num_hidden_layers + 1 - len(forced_list))]
-                path = [[[] for _ in range(self.config.num_hidden_layers + 1 - len(forced_list))] for _ in range(self.config.num_hidden_layers + 1 - len(forced_list))]
-                dp[0][0] = all_hidden_states[0]
-                path[0][0] = []
-                # x = 1
-                # for layer in range(1, self.config.num_hidden_layers + 1):
-                #     # dp[0][x] = all_hidden_states[0]
-                #     # path[0][x] = []
-                #     if layer-1 in forced_list:
-                #         past_key_values_copy = copy.deepcopy(past_key_values_back)
-                #         dp[x-1][0] = self.layers[layer-1](
-                #             dp[x-1][0],
-                #             attention_mask=causal_mask,
-                #             past_key_value = past_key_values_copy,
-                #             output_attentions=output_attentions,
-                #             use_cache=use_cache,
-                #             cache_position = cache_position,
-                #             position_embeddings = position_embeddings,
-                #             **flash_attn_kwargs)
-                #         path[x][0].append(layer-1)
-                #         dp[x-1][x-1] = all_hidden_states[layer]
-                #         path[x-1][x-1] = path[x-1][x-1].append(layer-1)
-                #     else:
-                #         dp[x][0] = dp[x-1][0]
-                #         path[x][0] = path[x-1][0]
-                #     # if i < self.config.num_hidden_layers:
-                #         dp[x][x] = all_hidden_states[layer]
-                #         path[x][x] = path[x-1][x-1].append(layer-1)
-                #         x += 1
-                
-                x = 0
-                for layer in range(1, self.config.num_hidden_layers+1):
-                    # print(f"Layer {layer} dynamic programming:")
-                    if layer-1 in forced_list:
-                        for budget in range(x+1):
-                            past_key_values_copy = copy.deepcopy(past_key_values_back)
-                            dp[x][budget] = self.layers[layer-1](
-                                dp[x][budget],
-                                attention_mask=causal_mask,
-                                position_ids=position_ids,
-                                past_key_value = past_key_values_copy,
-                                output_attentions=output_attentions,
-                                use_cache=use_cache,
-                                cache_position = cache_position,
-                                position_embeddings = position_embeddings,
-                                **flash_attn_kwargs
-                            )[0]
-                            path[x][budget].append(layer-1)
-                            del past_key_values_copy
-                    else:
-                        x += 1
-                        dp[x][0] = dp[x-1][0]
-                        path[x][0] = path[x-1][0].copy()
-                        dp[x][x] = all_hidden_states[layer]
-                        path[x][x] = path[x-1][x-1].copy()
-                        path[x][x].append(layer-1)
-                        for budget in range(1, x):
-                            past_key_values_copy = copy.deepcopy(past_key_values_back)
-                            # print(f"Budget {budget}:")
-                            # execute this layer
-                            layer_outputs = self.layers[layer-1](
-                                dp[x-1][budget - 1],
-                                attention_mask=causal_mask,
-                                position_ids=position_ids,
-                                past_key_value = past_key_values_copy,
-                                output_attentions=output_attentions,
-                                use_cache=use_cache,
-                                cache_position = cache_position,
-                                position_embeddings = position_embeddings,
-                                **flash_attn_kwargs
-                            )
-
-                            # [bs, seq, dim]
-                            cos_sim_exec = torch.nn.functional.cosine_similarity(layer_outputs[0], all_hidden_states[layer], dim=-1).mean()
-                            # cos_sim_exec = 1/(1+torch.nn.functional.mse_loss(layer_outputs[0], all_hidden_states[layer]))
-                            adaptor_output = dp[x-1][budget] + adaptor[layer-1](dp[x-1][budget])
-                            # adaptor_output = dp[x-1][budget]
-                        
-                            cos_sim_skip = torch.nn.functional.cosine_similarity(adaptor_output, all_hidden_states[layer], dim=-1).mean()
-                            # cos_sim_skip = 1/(1+torch.nn.functional.mse_loss(dp[layer-1][budget], all_hidden_states[layer]))
-
-                            if cos_sim_exec >= cos_sim_skip:
-                                dp[x][budget] = layer_outputs[0]
-                                # print("if:", path[layer-1][budget-1])
-                                path[x][budget] = path[x-1][budget-1].copy() 
-                                path[x][budget].append(layer-1)
-                                # print("if:", path[layer][budget])
-                            else:
-                                dp[x][budget] = adaptor_output
-                                # print("else:", path[layer-1][budget])
-                                path[x][budget] = path[x-1][budget].copy()
-                                # print("else:", path[layer][budget])
-                            del past_key_values_copy
-                        
-                
-                logits_truth = lm_head(hidden_states)
-                token_id_truth_fake = torch.argmax(logits_truth[:,-1])
-                # print(token_id, end=' ')
-                end = self.config.num_hidden_layers - len(forced_list)
-                for budget in range(end+1):
-                    cos_sim = torch.nn.functional.cosine_similarity(dp[end][budget], all_hidden_states[self.config.num_hidden_layers], dim=-1).mean()
-                    # cos_sim = 1/(1+torch.nn.functional.mse_loss(dp[self.config.num_hidden_layers][budget], all_hidden_states[self.config.num_hidden_layers]))
-                    dp[end][budget] = self.norm(dp[end][budget])
-                    logits_pred = lm_head(dp[end][budget])
-                    token_id_pred = torch.argmax(logits_pred[:,-1])
-                    if token_id_pred == token_id_truth_fake:
-                        flag = True
-                        for i in  range(self.config.num_hidden_layers):
-                            if i not in path[end][budget]:
-                                cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i]+adaptor[i](all_hidden_states[i]), all_hidden_states[i+1], dim=-1).mean()
-                                # cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i], all_hidden_states[i+1], dim=-1).mean()
-                                if cos_sim_veri < 0.98:
-                                    flag = False
-                                    break
-                        if flag:
-                            exec_layer_list.append(path[end][budget])
-                            # print(f"Budget {budget}: cos_sim {cos_sim.item():.6f}, pred_token_id {token_id_pred}, path {path[end][budget]}")
-                            break
-                
-                
+         
         return BaseModelOutputWithPast(
             last_hidden_state=hidden_states,
             past_key_values=past_key_values if use_cache else None,
@@ -969,6 +851,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
         cache_position: Optional[torch.LongTensor] = None,
         logits_to_keep: Union[int, torch.Tensor] = 0,
         adaptor = None,
+        router = None,
         **kwargs: Unpack[KwargsForCausalLM],
     ) -> CausalLMOutputWithPast:
         r"""
@@ -1010,60 +893,24 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         
         # print(input_ids.shape)
-        if input_ids.shape[-1] > 1:
-            # [xjm:] LLM forward Prefill
-            outputs: BaseModelOutputWithPast= self.model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                position_ids=position_ids,
-                past_key_values=None,
-                inputs_embeds=inputs_embeds,
-                use_cache=use_cache,
-                output_attentions=output_attentions,
-                output_hidden_states=output_hidden_states,
-                cache_position=cache_position,
-                is_dp = False,
-                **kwargs,
-            )
-            past_key_values = outputs.past_key_values
-        else:
-            
-            past_key_values_back = copy.deepcopy(past_key_values)
-            exec_layer_list = []
-            outputs: BaseModelOutputWithPast = self.model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                position_ids=position_ids,
-                past_key_values=past_key_values,
-                inputs_embeds=inputs_embeds,
-                use_cache=use_cache,
-                output_attentions=output_attentions,
-                output_hidden_states=True,
-                cache_position=cache_position,
-                is_dp = True,
-                lm_head = self.lm_head,
-                exec_layer_list = exec_layer_list,
-                adaptor = adaptor,
-                **kwargs,
-            )
-            record.add(len(exec_layer_list[0]))
-            # update KV Cache
-            outputs: BaseModelOutputWithPast = self.model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                position_ids=position_ids,
-                past_key_values=past_key_values_back,
-                inputs_embeds=inputs_embeds,
-                use_cache=use_cache,
-                output_attentions=output_attentions,
-                output_hidden_states=True,
-                cache_position=cache_position,
-                is_dp = False,
-                exec_layer_list = exec_layer_list[0],
-                adaptor = adaptor,
-                **kwargs,
-            )
-            past_key_values = outputs.past_key_values
+
+        
+        # update KV Cache
+        outputs: BaseModelOutputWithPast = self.model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            past_key_values=past_key_values,
+            inputs_embeds=inputs_embeds,
+            use_cache=use_cache,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            cache_position=cache_position,
+            router = router,
+            adaptor = adaptor,
+            **kwargs,
+        )
+        past_key_values = outputs.past_key_values
             
             
     

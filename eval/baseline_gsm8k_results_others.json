@@ -1,0 +1,21 @@
+{
+  "accuracy": 0.0,
+  "correct": 0,
+  "total": 1,
+  "results": [
+    {
+      "index": 0,
+      "question": "Janet’s ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+      "ground_truth": "18",
+      "prediction": "3.",
+      "generated_text": "To solve this, let's break it down step by step:\n\n1. **Total eggs laid per day**: 16  \n2. **Eggs eaten by Janet for breakfast**: 3  \n3. **Eggs used for muff",
+      "correct": false
+    }
+  ],
+  "config": {
+    "mode": "others",
+    "num_fewshot": 5,
+    "limit": 1,
+    "seed": 42
+  }
+}

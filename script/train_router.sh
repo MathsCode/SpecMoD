@@ -4,16 +4,16 @@ BATCH_SIZE=16
 
 ulimit -c 0  # 禁止生成 core 文件
 
-echo ">>> 开始执行，总任务 36 个，每批并发 $BATCH_SIZE 个..."
+echo ">>> 开始执行，总任务 32 个，每批并发 $BATCH_SIZE 个..."
 
-for i in {1..35}
+for i in {2..33}
 do
     # 1. 计算 GPU ID
     gpu_id=$((i % 8))
 
     # 2. 启动任务
     echo "启动任务 $i (GPU: $gpu_id)"
-    CUDA_VISIBLE_DEVICES="$gpu_id" python adaptor_train.py -m 3 -d 2048 -l "$i" > "./log/log_${i}.txt" 2>&1 &
+    CUDA_VISIBLE_DEVICES="$gpu_id" python train_layer_router.py  -d 128 -l "$i" > "./log/log_${i}_router.txt" 2>&1 &
 
     count=$((i + 1))
     

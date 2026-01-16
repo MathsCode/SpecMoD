@@ -54,7 +54,7 @@ from transformers.utils import (
 from transformers.utils.deprecation import deprecate_kwarg
 from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
 
-from .utils import storage, DynamicBuffer
+from .utils import record
 
 import copy
 
@@ -292,6 +292,7 @@ class Qwen3DecoderLayer(nn.Module):
         cache_position: Optional[torch.LongTensor] = None,
         position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,  # necessary, but kept here for BC
         flag = True,
+        adaptor = None,
         **kwargs: Unpack[FlashAttentionKwargs],
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
         residual = hidden_states
@@ -312,6 +313,7 @@ class Qwen3DecoderLayer(nn.Module):
             **kwargs,
         )
         if not flag:
+            residual = residual + adaptor[self.layer_index](residual)
             return (residual,)
         hidden_states = residual + hidden_states
 
@@ -525,14 +527,13 @@ class Qwen3Model(Qwen3PreTrainedModel):
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         cache_position: Optional[torch.LongTensor] = None,
-        exec_layer_list = None,
+        router = None,
+        spec_model = None,
         adaptor = None,
+        last_hidden_state = None,
         **flash_attn_kwargs: Unpack[FlashAttentionKwargs],
     ) -> BaseModelOutputWithPast:
-        if self.input_ids == None:
-            self.input_ids = input_ids
-        else:
-            self.input_ids = torch.cat([self.input_ids, input_ids], dim = -1)
+
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
@@ -555,6 +556,21 @@ class Qwen3Model(Qwen3PreTrainedModel):
         
         if inputs_embeds is None:
             inputs_embeds = self.embed_tokens(input_ids)
+        if self.input_ids == None:
+            self.input_ids = input_ids
+            exec_layer_list = []
+        else:
+            self.input_ids = torch.cat([self.input_ids, input_ids], dim = -1)
+            
+            spec_hidden_states = spec_model.topK_generate(hidden_states = last_hidden_state,
+                                                          input_ids = self.input_ids)
+            input_feature = torch.cat([inputs_embeds, spec_hidden_states], dim = -1).to(inputs_embeds.device)
+            logits = torch.sigmoid(router(input_feature))
+            exec_layer_list = logits > 0.5
+            exec_layer_list = exec_layer_list[0][0]
+            record.add(exec_layer_list.sum().item())
+            # print(exec_layer_list)
+            # print(exec_layer_list.shape)
 
         if use_cache and past_key_values is None:
             past_key_values = DynamicCache()
@@ -582,7 +598,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         all_hidden_states = () if output_hidden_states else None
         all_self_attns = () if output_attentions else None
         
-        
+        forced_list = [0,1,34,35]
         for decoder_layer in self.layers[: self.config.num_hidden_layers]:
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
@@ -608,13 +624,11 @@ class Qwen3Model(Qwen3PreTrainedModel):
                     use_cache=use_cache,
                     cache_position=cache_position,
                     position_embeddings=position_embeddings,
-                    flag = True if exec_layer_list == None or exec_layer_list == [] or exec_layer_list[decoder_layer.layer_index]  else False,
+                    flag = True if exec_layer_list == [] or exec_layer_list[decoder_layer.layer_index] or decoder_layer.layer_index in forced_list else False,
+                    adaptor = adaptor,
                     **flash_attn_kwargs,
                 )
             hidden_states = layer_outputs[0]
-            if exec_layer_list != None and exec_layer_list != []:
-                if not exec_layer_list[decoder_layer.layer_index]:
-                    hidden_states = hidden_states + adaptor[decoder_layer.layer_index](hidden_states)
     
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
@@ -887,21 +901,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         
-        # print(input_ids.shape)
-        # print(last_hidden_state)
-        if self.input_ids == None:
-            self.input_ids = input_ids
-            exec_layer_list = []
-        else:
-            self.input_ids = torch.cat([self.input_ids, input_ids], dim = -1)
-            
-            spec_hidden_states = spec_model.topK_generate(hidden_states = last_hidden_state,
-                                                          input_ids = self.input_ids)
-            logits = router(spec_hidden_states)
-            exec_layer_list = logits > 0
-            exec_layer_list = exec_layer_list[0][0]
-            # print(exec_layer_list)
-            # print(exec_layer_list.shape)
+
         
         outputs: BaseModelOutputWithPast = self.model(
             input_ids=input_ids,
@@ -913,8 +913,10 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
             output_attentions=output_attentions,
             output_hidden_states=True,
             cache_position=cache_position,
-            exec_layer_list = exec_layer_list,
+            spec_model = spec_model,
+            router = router,
             adaptor = adaptor,
+            last_hidden_state = last_hidden_state,
             **kwargs,
         )
         past_key_values = outputs.past_key_values

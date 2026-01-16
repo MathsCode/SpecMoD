@@ -15,7 +15,7 @@ from typing import Optional
 import json, tqdm
 import torch
 import torch.nn as nn
-from model.utils import storage, ShadowAdapter2, ShadowAdapter3,record
+from model.utils import storage, ShadowAdapter2, ShadowAdapter3
 
 
 def load_questions(question_file: str, begin=None, end=None):
@@ -30,16 +30,10 @@ def load_questions(question_file: str, begin=None, end=None):
 
 
 def main(args):
-    from model.qwen3_model_adaptor_pipeline import  Spec_Qwen3ForCausalLM
-    
-    if args.device == "infini":
-        model_path = f"/share/others/public_models/{args.model}/"
-        dataset_path = '/home/xujiaming/xujiaming/Paper/dataset/'+args.dataset+'/question.jsonl'
-    elif args.device == "qz":
-        model_path = f"/inspire/hdd/global_public/public_models/Qwen/{args.model}/"
-        dataset_path = '/inspire/hdd/project/inference-chip/xujiaming-253308120313/dataset/benchmark/'+args.dataset+'/question.jsonl'
-    else:
-        assert False, "device error"
+    from model.qwen3_model_adaptor_pipeline_storage import  Spec_Qwen3ForCausalLM
+
+    model_path = f"/inspire/hdd/global_public/public_models/Qwen/{args.model}/"
+    dataset_path = '/inspire/hdd/project/inference-chip/xujiaming-253308120313/dataset/benchmark/'+args.dataset+'/question.jsonl'
         
     
 
@@ -69,7 +63,13 @@ def main(args):
         
     
 
+    
+    storage.reset()
+    save_json = {}
+    save_last_hidden_states = []
     questions = load_questions(dataset_path,args.begin,args.end)
+    layer_router_train_data = [[] for i in range(LAYERS)]
+    layer_router_train_label = [[] for i in range(LAYERS)]
     for question in tqdm.tqdm(questions):
         messages = [
             {"role": "system",
@@ -84,26 +84,53 @@ def main(args):
         inputs = tokenizer.apply_chat_template(
             messages,
             add_generation_prompt=True,
-            enable_thinking = True, 
+            enable_thinking = False, 
             tokenize=True,
             return_dict=True,
             return_tensors="pt",
         ).to(model.device)
+        save_json_item = {"Prompt":inputs.input_ids.squeeze(0).tolist()}
         outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.000001, adaptor=adaptor)
-        print(tokenizer.decode(outputs[0]))
-    print(record.get_average_len())
-  
+        json_data, total_length, total_tokens = storage.get_normal_info()
+        layer_hidden_states, label = storage.get_layer_hidden_states()
+        for i in range(LAYERS):
+            layer_hidden_states[i] = torch.cat(layer_hidden_states[i], dim=1).cpu()
+            label[i] = torch.tensor(label[i]).cpu()
+            layer_router_train_data[i].append(layer_hidden_states[i])
+            layer_router_train_label[i].append(label[i])
+        
+        last_hidden_states = storage.get_last_hidden_states()
+        last_hidden_states = torch.cat(last_hidden_states, dim = 1)
+        
+        save_last_hidden_states.append(last_hidden_states)
+        
+        save_json_item['Token'] = json_data
+        save_json_item['avg_len'] = total_length/total_tokens if total_tokens > 0 else 0
+        save_json_item['output'] = outputs[0].cpu().tolist()
+        save_json[question["question_id"]] = save_json_item
+        storage.reset()
+        # print(tokenizer.decode(outputs[0]))
+    
+    for i in range(LAYERS):
+        if layer_router_train_data != []:
+            layer_router_train_data[i] = torch.cat(layer_router_train_data[i], dim = 1).cpu()
+            layer_router_train_label[i] = torch.cat(layer_router_train_label[i], dim = -1).cpu()
+            torch.save(layer_router_train_data[i], f'./train_data/layer_router/sharegpt/{args.dataset}_{args.model}_laye_router_X_idx{i}_{args.begin}_{args.end}.pt')
+            torch.save(layer_router_train_label[i], f'./train_data/layer_router/sharegpt/{args.dataset}_{args.model}_laye_router_Y_idx{i}_{args.begin}_{args.end}.pt')
+    save_last_hidden_states = torch.cat(save_last_hidden_states, dim = 1).cpu()
+    torch.save(save_last_hidden_states, f'./train_data/global_router/sharegpt/{args.dataset}_{args.model}_last_hidden_states_{args.begin}_{args.end}.pt')
+    save_path = f'./train_data/global_router/sharegpt/{args.dataset}_{args.model}_normal_info_{args.begin}_{args.end}.json'
+    with open(save_path, "w") as f:
+        json.dump(save_json, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
     import argparse 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--device", type=str, default="infini")
     parser.add_argument("--dataset", "-d", type=str, default="mt-bench")
     # dataset: mt-bench, gsm8k, alpaca, sum, vicuna-bench
     parser.add_argument("--model", "-m", type=str, default="Qwen3-8B")
     parser.add_argument("--begin", "-b", type=int, default=None)
     parser.add_argument("--end", "-e", type=int, default=None)
-    parser.add_argument("--setting", type=str, default='dev')
     parser.add_argument("--max_gen", type=int, default=100)
     args = parser.parse_args()
     main(args)

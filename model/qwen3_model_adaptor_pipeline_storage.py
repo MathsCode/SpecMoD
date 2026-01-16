@@ -53,7 +53,8 @@ from transformers.utils import (
 )
 from transformers.utils.deprecation import deprecate_kwarg
 from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
-from .utils import record
+
+from .utils import storage, DynamicBuffer
 
 import copy
 
@@ -736,7 +737,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
                 # print(token_id, end=' ')
                 end = self.config.num_hidden_layers - len(forced_list)
                 for budget in range(end+1):
-                    cos_sim = torch.nn.functional.cosine_similarity(dp[end][budget], all_hidden_states[self.config.num_hidden_layers], dim=-1).mean()
+                    # cos_sim = torch.nn.functional.cosine_similarity(dp[end][budget], all_hidden_states[self.config.num_hidden_layers], dim=-1).mean()
                     # cos_sim = 1/(1+torch.nn.functional.mse_loss(dp[self.config.num_hidden_layers][budget], all_hidden_states[self.config.num_hidden_layers]))
                     dp[end][budget] = self.norm(dp[end][budget])
                     logits_pred = lm_head(dp[end][budget])
@@ -745,9 +746,9 @@ class Qwen3Model(Qwen3PreTrainedModel):
                         flag = True
                         for i in  range(self.config.num_hidden_layers):
                             if i not in path[end][budget]:
-                                cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i]+adaptor[i](all_hidden_states[i]), all_hidden_states[i+1], dim=-1).mean()
-                                # cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i], all_hidden_states[i+1], dim=-1).mean()
-                                if cos_sim_veri < 0.98:
+                                cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i], all_hidden_states[i+1], dim=-1).mean()
+                                # cos_sim_veri = torch.nn.functional.cosine_similarity(all_hidden_states[i]+adaptor[i](all_hidden_states[i]), all_hidden_states[i+1], dim=-1).mean()
+                                if cos_sim_veri < 0.94:
                                     flag = False
                                     break
                         if flag:
@@ -1020,13 +1021,18 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 inputs_embeds=inputs_embeds,
                 use_cache=use_cache,
                 output_attentions=output_attentions,
-                output_hidden_states=output_hidden_states,
+                output_hidden_states=True,
                 cache_position=cache_position,
                 is_dp = False,
                 **kwargs,
             )
+            all_hidden_states = outputs.hidden_states
+            #[xjm]-START
+            storage.add_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
+            #[xjm]-END
             past_key_values = outputs.past_key_values
         else:
+
             
             past_key_values_back = copy.deepcopy(past_key_values)
             exec_layer_list = []
@@ -1041,13 +1047,15 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 output_hidden_states=True,
                 cache_position=cache_position,
                 is_dp = True,
+                # token_id_truth = token_id_truth,
                 lm_head = self.lm_head,
                 exec_layer_list = exec_layer_list,
                 adaptor = adaptor,
                 **kwargs,
             )
-            record.add(len(exec_layer_list[0]))
+            
             # update KV Cache
+            # print(exec_layer_list[0])
             outputs: BaseModelOutputWithPast = self.model(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
@@ -1064,16 +1072,26 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
                 **kwargs,
             )
             past_key_values = outputs.past_key_values
-            
-            
-    
+            all_hidden_states = outputs.hidden_states
+            #[xjm]-START
+            storage.add_last_hidden_states(torch.cat([all_hidden_states[self.config.num_hidden_layers-3], all_hidden_states[self.config.num_hidden_layers//2], all_hidden_states[2]], dim =-1))
+            for idx in range(self.config.num_hidden_layers):
+                storage.add_layer_hidden_states(all_hidden_states[idx], int(idx in exec_layer_list[0]), idx)
+            #[xjm]-END
+                
         
 
         hidden_states = outputs.last_hidden_state
         # Only compute necessary logits, and do not upcast them to float if we are not computing the loss
         slice_indices = slice(-logits_to_keep, None) if isinstance(logits_to_keep, int) else logits_to_keep
         logits = self.lm_head(hidden_states[:, slice_indices, :])
-
+        
+        #[xjm]-START
+        if input_ids.shape[-1] == 1:
+            token_id_pred = torch.argmax(logits)
+            json_item = {"layer_index": exec_layer_list[0], 'input_id': input_ids[0,-1].item(), 'output_id': token_id_pred.item()}
+            storage.add_normal_info(json_item, len(exec_layer_list[0]))
+        #[xjm]-END
         loss = None
         if labels is not None:
             loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)

@@ -10,32 +10,43 @@ class DataStorage:
         self._json_data = []
         self._total_length = 0
         self._total_tokens = 0
-        self._true_last_hidden_states = []
-        self._fake_last_hidden_states = []
-        self._cur_hidden_states = []
-        self.train_x = []
-        self.train_y = []
+        self._last_hidden_states = []
+        self._layer_hidden_states = []
+        self._label = []
     
-    def add(self, json_item, length, cur_hidden_states, fake_last_hidden_states):
+    def add_normal_info(self, json_item, length):
         self._json_data.append(json_item)
         self._total_length += length
         self._total_tokens += 1
-        self._cur_hidden_states.append(cur_hidden_states)
-        self._fake_last_hidden_states.append(fake_last_hidden_states)
-    def add_true_last_hidden_states(self, true_last_hidden_states, ):
-        self._true_last_hidden_states.append(true_last_hidden_states)
-    def get_data(self):
-        return self._json_data.copy(), self._cur_hidden_states, self._fake_last_hidden_states, self._true_last_hidden_states, self._total_length, self._total_tokens
+    def get_normal_info(self):
+        return self._json_data.copy(), self._total_length, self._total_tokens
     
-    def add_train_data(self, x, y, layer_id):
-        while len(self.train_x) <= layer_id:
-            self.train_x.append([])
-            self.train_y.append([])
-        self.train_x[layer_id].append(x)
-        self.train_y[layer_id].append(y)
-    def get_train_data(self):
-        return self.train_x, self.train_y
-        
+    
+    def add_last_hidden_states(self, last_hidden_states, ):
+        self._last_hidden_states.append(last_hidden_states)
+    def get_last_hidden_states(self):
+        return self._last_hidden_states
+
+    
+    def add_layer_hidden_states(self, layer_hidden_states, label, layer_id):
+        while len(self._layer_hidden_states) <= layer_id:
+            self._layer_hidden_states.append([])
+            self._label.append([])
+        self._layer_hidden_states[layer_id].append(layer_hidden_states)
+        self._label[layer_id].append(label)
+    def get_layer_hidden_states(self):
+        return  self._layer_hidden_states, self._label
+    
+    
+class Record:
+    def __init__(self):
+        self.reset()
+    def reset(self):
+        self.exec_layer_list = []
+    def add(self, layer_id):
+        self.exec_layer_list.append(layer_id)
+    def get_average_len(self):
+        return sum(self.exec_layer_list)/len(self.exec_layer_list)
 
 class DynamicBuffer(Cache):
     def __init__(self):
@@ -351,7 +362,7 @@ class ShadowAdapter3(nn.Module):
         # 这样初始时: Adapter(x) = 0, Output = x + 0 = x (完美透传)
         # 训练开始后，它会慢慢学到非 0 的修正值。
         
-        nn.init.zeros_(self.up_proj.weight)
+        # nn.init.zeros_(self.up_proj.weight)
         nn.init.kaiming_normal_(self.gate_proj.weight, a=0.2)
         nn.init.kaiming_normal_(self.up_proj.weight, a=0.2)
         nn.init.xavier_normal_(self.down_proj.weight)
@@ -367,6 +378,33 @@ class ShadowAdapter3(nn.Module):
         out = self.down_proj(inter)
         return self.gate_scale*out
 
+class Global_router(nn.Module):
+    def __init__(self, input_dim, hidden_dim=64, output_dim=36):
+
+        super().__init__()
+        self.norm = Qwen3RMSNorm(input_dim)
+        self.gate_proj = nn.Linear(input_dim, hidden_dim, bias=False)
+        self.up_proj   = nn.Linear(input_dim, hidden_dim, bias=False)
+        self.down_proj = nn.Linear(hidden_dim, output_dim, bias=True)
+        self.act_fn = nn.SiLU()
+
+        
+        nn.init.kaiming_normal_(self.gate_proj.weight, a=0.2)
+        nn.init.kaiming_normal_(self.up_proj.weight, a=0.2)
+        nn.init.xavier_normal_(self.down_proj.weight, gain=0.1)
+        nn.init.constant_(self.down_proj.bias, -2.0)
+
+    def forward(self, x):
+        x_norm = self.norm(x)
+        
+        # 2. SwiGLU 计算
+        # 公式: (SiLU(Gate) * Up) -> Down
+        gate = self.act_fn(self.gate_proj(x_norm))
+        up = self.up_proj(x_norm)
+        inter = gate * up
+        out = self.down_proj(inter)
+        return out
 
 
 storage = DataStorage()
+record = Record()

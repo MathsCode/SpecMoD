@@ -15,8 +15,8 @@ from typing import Optional
 import json, tqdm
 import torch
 import torch.nn as nn
-from model.utils import storage, ShadowAdapter2, ShadowAdapter3,record
-
+from model.utils import storage, ShadowAdapter2, ShadowAdapter3, PathPredictorMLP, record
+import time
 
 def load_questions(question_file: str, begin=None, end=None):
     """Load questions from a file."""
@@ -30,7 +30,7 @@ def load_questions(question_file: str, begin=None, end=None):
 
 
 def main(args):
-    from model.qwen3_model_adaptor_pipeline import  Spec_Qwen3ForCausalLM
+    from model.qwen3_model_adaptor_layer_router_pipeline import  Spec_Qwen3ForCausalLM
     
     if args.device == "infini":
         model_path = f"/share/others/public_models/{args.model}/"
@@ -47,7 +47,7 @@ def main(args):
     model = Spec_Qwen3ForCausalLM.from_pretrained(model_path).half().to('cuda')
     LAYERS = model.config.num_hidden_layers
     adaptor = [None, ]
-    
+    router = [None, None,]
     # adaptor = nn.ModuleList([
     #         ShadowAdapter3(model.config.hidden_size, 2048) for _ in range(LAYERS)
     #     ])
@@ -59,14 +59,21 @@ def main(args):
         if i == 34:
             adaptor.append(None)
         else:
-            layer_adaptor = ShadowAdapter3(model.config.hidden_size, 2048)
-            layer_adaptor_weight = torch.load(f"./checkpoint/adaptor/2048/adapter_layer_{i}_2048_Model3_0.95.pt")
+            layer_adaptor = ShadowAdapter3(model.config.hidden_size, 1024)
+            layer_adaptor_weight = torch.load(f"./checkpoint/adaptor/1024/adapter_layer_{i}_1024_Model3_0.95.pt")
             layer_adaptor.load_state_dict(layer_adaptor_weight)
             layer_adaptor = layer_adaptor.half().to(model.device)
             adaptor.append(layer_adaptor)
-            
+    
+    for i in range(2, 34):
+        layer_router = PathPredictorMLP(n_layers=1, llm_hidden_dim=model.config.hidden_size, mlp_internal_dim=128)
+        layer_router_weight = torch.load(f"./checkpoint/layer_router/128/router_layer_{i}_128.pt")
+        layer_router.load_state_dict(layer_router_weight)
+        layer_router = layer_router.half().to(model.device)
+        router.append(layer_router)
 
-        
+    router.append(None)
+    router.append(None)
     
 
     questions = load_questions(dataset_path,args.begin,args.end)
@@ -84,14 +91,17 @@ def main(args):
         inputs = tokenizer.apply_chat_template(
             messages,
             add_generation_prompt=True,
-            enable_thinking = True, 
+            enable_thinking = False, 
             tokenize=True,
             return_dict=True,
             return_tensors="pt",
         ).to(model.device)
-        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.000001, adaptor=adaptor)
+
+        outputs = model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.000001, adaptor=adaptor, router=router)
         print(tokenizer.decode(outputs[0]))
-    print(record.get_average_len())
+        
+        print(record.get_average_len())
+    
   
 
 if __name__ == "__main__":
@@ -103,7 +113,6 @@ if __name__ == "__main__":
     parser.add_argument("--model", "-m", type=str, default="Qwen3-8B")
     parser.add_argument("--begin", "-b", type=int, default=None)
     parser.add_argument("--end", "-e", type=int, default=None)
-    parser.add_argument("--setting", type=str, default='dev')
     parser.add_argument("--max_gen", type=int, default=100)
     args = parser.parse_args()
     main(args)

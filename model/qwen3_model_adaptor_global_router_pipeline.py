@@ -604,7 +604,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
         
         forced_list = [0,1,34,35]
         for decoder_layer in self.layers[: self.config.num_hidden_layers]:
-            if output_hidden_states:
+            if decoder_layer.layer_index == len(self.layers)-3 or decoder_layer.layer_index == len(self.layers)//2 or decoder_layer.layer_index == 2:
                 all_hidden_states += (hidden_states,)
             if self.gradient_checkpointing and self.training:
                 layer_outputs = self._gradient_checkpointing_func(
@@ -638,8 +638,8 @@ class Qwen3Model(Qwen3PreTrainedModel):
                 all_self_attns += (layer_outputs[1],)
 
         # add hidden states from the last decoder layer
-        if output_hidden_states:
-            all_hidden_states += (hidden_states,)
+        # if output_hidden_states:
+        #     all_hidden_states += (hidden_states,)
         hidden_states = self.norm(hidden_states)
 
         
@@ -944,7 +944,7 @@ class Spec_Qwen3ForCausalLM(Qwen3PreTrainedModel, GenerationMixin):
             past_key_values=past_key_values,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
-            last_hidden_state=last_hidden_state,
+            last_hidden_state=torch.cat(outputs.hidden_states, dim =-1),
         )
 
 

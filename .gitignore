@@ -12,3 +12,4 @@ model/__pycache__
 /output
 /final_model
 *tar.gz
+*.ipynb

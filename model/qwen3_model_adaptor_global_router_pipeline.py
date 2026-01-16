@@ -564,7 +564,8 @@ class Qwen3Model(Qwen3PreTrainedModel):
             exec_layer_list = []
         else:
             self.input_ids = torch.cat([self.input_ids, input_ids], dim = -1)
-            
+            # print(self.input_ids.shape)
+            # print(last_hidden_state.shape)
             spec_hidden_states = spec_model.topK_generate(hidden_states = last_hidden_state,
                                                           input_ids = self.input_ids)
             input_feature = torch.cat([inputs_embeds, spec_hidden_states], dim = -1).to(inputs_embeds.device)

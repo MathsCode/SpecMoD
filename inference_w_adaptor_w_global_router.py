@@ -85,7 +85,7 @@ def main(args):
             return_dict=True,
             return_tensors="pt",
         ).to(ori_model.device)
-
+        ori_model.model.input_id_init()
         outputs = ori_model.generate(**inputs, max_new_tokens=args.max_gen, temperature=0.000001, adaptor=adaptor, router=router,spec_model=spec_model, last_hidden_state = None)
         print(tokenizer.decode(outputs[0]))
         

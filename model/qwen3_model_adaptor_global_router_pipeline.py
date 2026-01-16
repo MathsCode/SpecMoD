@@ -514,6 +514,9 @@ class Qwen3Model(Qwen3PreTrainedModel):
     def set_input_embeddings(self, value):
         self.embed_tokens = value
 
+    def input_id_init(self):
+        self.input_ids = None
+    
     @can_return_tuple
     @add_start_docstrings_to_model_forward(QWEN3_INPUTS_DOCSTRING)
     def forward(

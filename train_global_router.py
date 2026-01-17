@@ -47,35 +47,35 @@ class Spec_Data(Dataset):
                         for idx, token_info in enumerate(meta_json_data['Token']):
                             labels[idx][token_info['layer_index']] = 1.0
                         self.labels.append(labels)
-                file_path = f"/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/train_data/global_router/0.94/thinking/{dataset}_Qwen3-8B_last_hidden_states_None_None.pt"
-                if not os.path.exists(file_path):
-                    continue
-                last_hidden_states = torch.load(file_path)
-                with open(f"/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/train_data/global_router/0.94/thinking/{dataset}_Qwen3-8B_normal_info_None_None.json", "r") as f:
-                    json_data = json.load(f)
-                    start_ptr = 0
-                    for id, meta_json_data in json_data.items():
-                        len_O = len(meta_json_data['output'])
-                        len_P = len(meta_json_data['Prompt'])
-                        len_T = len(meta_json_data['Token'])
-                        input_ids = torch.tensor(meta_json_data['output']).view(1,-1).to(ori_model.device)
-                        hidden_states = last_hidden_states[:,start_ptr:start_ptr+len_P+len_T,:].to(ori_model.device)
-                        start_ptr += len_P+len_T
-                        # print(hidden_states.shape)
-                        # print(input_ids.shape)
-                        spec_model.reset_kv()
-                        spec_hidden_states = spec_model.topK_generate(hidden_states=hidden_states, input_ids = input_ids)
-                        spec_hidden_states = spec_hidden_states[0].detach().to('cpu')
-                        cur_hidden_states = ori_model.model.embed_tokens(torch.tensor(meta_json_data['output'][1:], device=ori_model.device))
-                        cur_hidden_states = cur_hidden_states.detach().to('cpu')
-                        # print(cur_hidden_states.shape)
-                        # print(spec_hidden_states.shape)
-                        input_data = torch.cat([cur_hidden_states, spec_hidden_states], dim = -1)[len_P-1:len_P-1+len_T]
-                        self.inputs.append(input_data.to('cpu'))
-                        labels = torch.zeros(len_T, ori_model.config.num_hidden_layers).to('cpu')
-                        for idx, token_info in enumerate(meta_json_data['Token']):
-                            labels[idx][token_info['layer_index']] = 1.0
-                        self.labels.append(labels)
+                # file_path = f"/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/train_data/global_router/0.94/thinking/{dataset}_Qwen3-8B_last_hidden_states_None_None.pt"
+                # if not os.path.exists(file_path):
+                #     continue
+                # last_hidden_states = torch.load(file_path)
+                # with open(f"/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/train_data/global_router/0.94/thinking/{dataset}_Qwen3-8B_normal_info_None_None.json", "r") as f:
+                #     json_data = json.load(f)
+                #     start_ptr = 0
+                #     for id, meta_json_data in json_data.items():
+                #         len_O = len(meta_json_data['output'])
+                #         len_P = len(meta_json_data['Prompt'])
+                #         len_T = len(meta_json_data['Token'])
+                #         input_ids = torch.tensor(meta_json_data['output']).view(1,-1).to(ori_model.device)
+                #         hidden_states = last_hidden_states[:,start_ptr:start_ptr+len_P+len_T,:].to(ori_model.device)
+                #         start_ptr += len_P+len_T
+                #         # print(hidden_states.shape)
+                #         # print(input_ids.shape)
+                #         spec_model.reset_kv()
+                #         spec_hidden_states = spec_model.topK_generate(hidden_states=hidden_states, input_ids = input_ids)
+                #         spec_hidden_states = spec_hidden_states[0].detach().to('cpu')
+                #         cur_hidden_states = ori_model.model.embed_tokens(torch.tensor(meta_json_data['output'][1:], device=ori_model.device))
+                #         cur_hidden_states = cur_hidden_states.detach().to('cpu')
+                #         # print(cur_hidden_states.shape)
+                #         # print(spec_hidden_states.shape)
+                #         input_data = torch.cat([cur_hidden_states, spec_hidden_states], dim = -1)[len_P-1:len_P-1+len_T]
+                #         self.inputs.append(input_data.to('cpu'))
+                #         labels = torch.zeros(len_T, ori_model.config.num_hidden_layers).to('cpu')
+                #         for idx, token_info in enumerate(meta_json_data['Token']):
+                #             labels[idx][token_info['layer_index']] = 1.0
+                #         self.labels.append(labels)
 
         self.inputs = torch.cat(self.inputs, dim = 0).to('cpu')
         self.labels = torch.cat(self.labels, dim = 0).to('cpu')

@@ -46,7 +46,7 @@ def main(args):
     LAYERS = ori_model.config.num_hidden_layers
     adaptor = [None, ]
     router = Global_router(input_dim=ori_model.config.hidden_size*2, hidden_dim=1024, output_dim=LAYERS).to(ori_model.device)
-    router_weight = torch.load("/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/global_router/global_router_1024_Model1_non_thinking.pt")
+    router_weight = torch.load("/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/global_router/global_router_1024_Model1_non_thinking_first.pt")
     # router = PathPredictorMLP(n_layers=LAYERS, mlp_internal_dim=2048, llm_hidden_dim=ori_model.config.hidden_size*2).to(ori_model.device)
     # router_weight = torch.load("/inspire/hdd/project/inference-chip/xujiaming-253308120313/Paper/SpecMoD/checkpoint/global_router/global_router_2048_Model2.pt")
     router.load_state_dict(router_weight)

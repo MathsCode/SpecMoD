@@ -50,11 +50,11 @@ def main(args):
     
     
     for i in range(1, LAYERS):
-        if i == 34:
+        if i == 38:
             adaptor.append(None)
         else:
-            layer_adaptor = ShadowAdapter3(model.config.hidden_size, 2048)
-            layer_adaptor_weight = torch.load(f"./checkpoint/adaptor/2048/adapter_layer_{i}_2048_Model3_0.95.pt")
+            layer_adaptor = ShadowAdapter3(model.config.hidden_size, 1024)
+            layer_adaptor_weight = torch.load(f"./checkpoint/adaptor_Qwen3-14B/1024/adapter_layer_{i}_1024_Model3_0.95.pt")
             layer_adaptor.load_state_dict(layer_adaptor_weight)
             layer_adaptor = layer_adaptor.half().to(model.device)
             adaptor.append(layer_adaptor)
@@ -115,11 +115,11 @@ def main(args):
         if layer_router_train_data != []:
             layer_router_train_data[i] = torch.cat(layer_router_train_data[i], dim = 1).cpu()
             layer_router_train_label[i] = torch.cat(layer_router_train_label[i], dim = -1).cpu()
-            torch.save(layer_router_train_data[i], f'./train_data/layer_router/sharegpt/{args.dataset}_{args.model}_laye_router_X_idx{i}_{args.begin}_{args.end}.pt')
-            torch.save(layer_router_train_label[i], f'./train_data/layer_router/sharegpt/{args.dataset}_{args.model}_laye_router_Y_idx{i}_{args.begin}_{args.end}.pt')
+            torch.save(layer_router_train_data[i], f'./train_data/layer_router/Qwen3-14B/{args.dataset}_{args.model}_laye_router_X_idx{i}_{args.begin}_{args.end}.pt')
+            torch.save(layer_router_train_label[i], f'./train_data/layer_router/Qwen3-14B/{args.dataset}_{args.model}_laye_router_Y_idx{i}_{args.begin}_{args.end}.pt')
     save_last_hidden_states = torch.cat(save_last_hidden_states, dim = 1).cpu()
-    torch.save(save_last_hidden_states, f'./train_data/global_router/sharegpt/{args.dataset}_{args.model}_last_hidden_states_{args.begin}_{args.end}.pt')
-    save_path = f'./train_data/global_router/sharegpt/{args.dataset}_{args.model}_normal_info_{args.begin}_{args.end}.json'
+    torch.save(save_last_hidden_states, f'./train_data/global_router/Qwen3-14B/{args.dataset}_{args.model}_last_hidden_states_{args.begin}_{args.end}.pt')
+    save_path = f'./train_data/global_router/Qwen3-14B/{args.dataset}_{args.model}_normal_info_{args.begin}_{args.end}.json'
     with open(save_path, "w") as f:
         json.dump(save_json, f, ensure_ascii=False, indent=4)
 

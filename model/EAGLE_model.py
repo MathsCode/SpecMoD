@@ -207,6 +207,7 @@ class LlamaAttention(nn.Module):
         self._init_rope()
 
     def _init_rope(self):
+        print(self.config.rope_scaling)
         if self.config.rope_scaling is None:
             if hasattr(self.config, "rope_theta"):
                 self.rotary_emb = LlamaRotaryEmbedding(self.head_dim,
@@ -656,7 +657,7 @@ class Model(nn.Module):
         else:
             out_hidden, past_key_values = self(hidden_states, input_ids=input_ids, use_cache=True)
         self.stable_kv = past_key_values
-        out_hidden = out_hidden[:, -1:]
+        # out_hidden = out_hidden[:, -1:]
         out_hidden = self.norm(out_hidden)
         return out_hidden
 
@@ -676,6 +677,7 @@ class Model(nn.Module):
         if not os.path.exists(configpath):
             configpath = hf_hub_download(Spec_model_path, "config.json")
         config = EConfig.from_pretrained(configpath)
+        
         # [xjm:] Load Weights
         try:
             load_model_path = os.path.join(Spec_model_path, "pytorch_model.bin")

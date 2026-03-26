@@ -405,6 +405,78 @@ class Global_router(nn.Module):
         out = self.down_proj(inter)
         return out
 
+class Cos_Sim_storage():
+    def __init__(self):
+        self.data = []
+    def add(self, data, layer_id):
+        while len(self.data) <= layer_id:
+            self.data.append([])
+        self.data[layer_id].append(data)
+    def get(self,layer_id):
+        return self.data[layer_id]
+        
+import torch
+import torch.nn.functional as F
+import numpy as np
+
+def generate_perturbed_hidden_states(clean_hidden_states, num_samples=50):
+    """
+    生成一系列受到不同程度扰动的 hidden_states。
+    
+    Args:
+        clean_hidden_states: 原始的 hidden state, shape [1, seq_len, hidden_dim]
+        num_samples: 采样的点数
+        
+    Returns:
+        List of (lambda, perturbed_hidden_states)
+    """
+    
+    # 获取原始信号的模长 (Norm)，保持量级一致
+    # shape: [1, seq_len, 1]
+    device = clean_hidden_states.device
+    signal_norm = torch.norm(clean_hidden_states, p=2, dim=-1, keepdim=True)
+    
+    # 设定 lambda (噪声强度) 的范围
+    # 0.0 表示无噪声 (Sim=1.0)
+    # 10.0 通常足够让 Sim 降到接近 0
+    lambdas = np.linspace(0, 10.0, num_samples)
+    
+    perturbed_list = []
+    
+    # 固定一个随机噪声方向，还是每个 lambda 随机一个方向？
+    # 建议：每个 lambda 都随机生成一个方向，这样更具一般性（蒙特卡洛采样的感觉）
+    
+    for lam in lambdas:
+        # 1. 生成高斯白噪声
+        noise = torch.randn_like(clean_hidden_states)
+        
+        # 2. 对噪声进行归一化 (单位向量化)
+        noise_norm = torch.norm(noise, p=2, dim=-1, keepdim=True)
+        normalized_noise = noise / (noise_norm + 1e-8)
+        
+        # 3. 施加扰动
+        # 公式: h_new = h + lambda * |h| * noise_unit
+        # 这样 lambda=0.1 就意味着噪声幅度是信号幅度的 10%
+        perturbation = lam * signal_norm * normalized_noise
+        perturbation = perturbation.to(device)
+        h_perturbed = clean_hidden_states + perturbation
+        input_sim = torch.nn.functional.cosine_similarity(h_perturbed, clean_hidden_states, dim=-1).mean()
+        perturbed_list.append((input_sim.item(), h_perturbed))
+        
+    return perturbed_list
+
+# --- 在主循环中调用 ---
+# 假设你已经拿到了某一层干净的 layer_output
+# perturbed_data = generate_perturbed_hidden_states(clean_layer_output, 100)
+# for lam, h_tilde in perturbed_data:
+#     1. 计算输入相似度 Input Sim (h_tilde vs clean_layer_output)
+#     2. 把 h_tilde 喂给模型后续层，得到 final_output
+#     3. 计算输出相似度 Output Sim
+#     4. 画点 (Input Sim, Output Sim)
+       
+        
+
 
 storage = DataStorage()
 record = Record()
+cos_sim_storage = Cos_Sim_storage()

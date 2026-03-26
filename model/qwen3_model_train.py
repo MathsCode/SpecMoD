@@ -613,7 +613,7 @@ class Qwen3Model(Qwen3PreTrainedModel):
             
         hidden_states = self.norm(hidden_states)
 
-        storage.add_true_last_hidden_states(torch.cat([all_hidden_states[len(self.layers)-3], all_hidden_states[len(self.layers)//2], all_hidden_states[2]], dim =-1))
+        # storage.add_true_last_hidden_states(torch.cat([all_hidden_states[len(self.layers)-3], all_hidden_states[len(self.layers)//2], all_hidden_states[2]], dim =-1))
 
         # [xjm:] start dynamic programming for skipping layers
         
@@ -681,10 +681,10 @@ class Qwen3Model(Qwen3PreTrainedModel):
                 token_id_pred = torch.argmax(logits_pred[:,-1])
                 if token_id_pred == token_id_truth  and cos_sim > 0.95:
                     json_item = {"layer_index": path[self.config.num_hidden_layers][budget], "similarity": cos_sim.item(), 'input_id': input_ids[0,-1].item(), 'output_id': token_id_pred.item()}
-                    storage.add(json_item, budget, all_hidden_states[0], dp[self.config.num_hidden_layers][budget])
+                    storage.add_normal_info(json_item, budget)
                     for layer_id in range(self.config.num_hidden_layers):
                         if layer_id not in path[self.config.num_hidden_layers][budget]:
-                            storage.add_train_data(all_hidden_states[layer_id], all_hidden_states[layer_id+1], layer_id)
+                            storage.add_layer_hidden_states(all_hidden_states[layer_id], all_hidden_states[layer_id+1], layer_id)
                     break
             
         

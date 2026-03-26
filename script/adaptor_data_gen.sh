@@ -13,7 +13,7 @@ DATASETS=(
 )
 # ========================================================
 
-SCRIPT_NAME="inference_traindata_gen.py"
+SCRIPT_NAME="inference_wo_adaptor_true_output.py"
 NUM_GPUS=8
 
 # 获取数组的总长度
@@ -40,8 +40,7 @@ for i in 0 1 2 3 4 5 6 7; do
             
             # 执行 Python 命令
             CUDA_VISIBLE_DEVICES=$i python $SCRIPT_NAME \
-                --dataset "$CURRENT_DATA" --max_gen 1000 -m Qwen3-14B \
-                > ./log/log_gpu_non_thinking_0.94_${CURRENT_DATA}.txt 2>&1
+                --dataset "$CURRENT_DATA" --max_gen 500 --model Qwen3-14B --device qz
                 
             echo "  -> [GPU $i] 完成: $CURRENT_DATA"
             

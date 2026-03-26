@@ -76,7 +76,7 @@ class LayerData(Dataset):
     def __init__(self, layer_id = 0, model = 'Qwen3-8B'):
         # 模拟你的预处理数据
         # 实际使用时，请加载保存的 .pt 文件
-        datasets = ['alpaca', 'gsm8k', 'math_infini', 'mt-bench', 'sum', 'vicuna-bench']
+        datasets = ['alpaca', 'gsm8k', 'math_infini', 'mt-bench', 'sum']
         self.inputs = []
         self.targets = []
         for dataset in datasets:
@@ -106,14 +106,14 @@ def train_one_layer_adapter(
 ):
     print(f"--- Training Adapter for Layer {layer_id} ---")
     
-    hidden_dim = 4096
+    hidden_dim = 5120
     if model_type == 1:
         adapter = ShadowAdapter1(hidden_dim, bottleneck_dim=adapter_dim).to(device)
     elif model_type == 2:
         adapter = ShadowAdapter2(hidden_dim, bottleneck_dim=adapter_dim).to(device)
     elif model_type == 3:
         adapter = ShadowAdapter3(hidden_dim, bottleneck_dim=adapter_dim).to(device)
-    dataset = LayerData(layer_id=layer_id)
+    dataset = LayerData(layer_id=layer_id, model='Qwen3-14B')
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
         
     optimizer = torch.optim.AdamW(adapter.parameters(), lr=lr)
@@ -190,4 +190,4 @@ if __name__ == "__main__":
     layer_id = args.layer_id
     trained_adapter = train_one_layer_adapter(layer_id, epochs=20, lr=1e-3, adapter_dim=args.dim, model_type = args.model)
     
-    torch.save(trained_adapter.state_dict(), f"./checkpoint/adaptor/{args.dim}/adapter_layer_{layer_id}_{args.dim}_Model{args.model}_{args.threshold}.pt")
+    torch.save(trained_adapter.state_dict(), f"./checkpoint/adaptor_Qwen3-14B/{args.dim}/adapter_layer_{layer_id}_{args.dim}_Model{args.model}_{args.threshold}.pt")

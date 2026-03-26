@@ -8,29 +8,27 @@ DATASETS=(
     "gsm8k"
     "alpaca"
     "sum"
-    "vicuna-bench"
-    "math_infini"
 )
 # ========================================================
 
-SCRIPT_NAME="inference_traindata_gen.py"
-NUM_GPUS=8
+SCRIPT_NAME="llama_inference_traindata_gen.py"
+NUM_GPUS=4
 
 # 获取数组的总长度
 TOTAL_TASKS=${#DATASETS[@]}
 
 echo "检测到 $TOTAL_TASKS 个数据集任务，准备分发给 $NUM_GPUS 张卡..."
 
-# 循环启动 8 个后台进程 (Worker)
-# 这里的 i 就是 GPU 的 ID (0, 1, ... 7)
-for i in 0 1 2 3 4 5 6 7; do
+# 循环启动 4 个后台进程 (Worker)
+# 这里的 i 就是 GPU 的 ID (0, 1, 2, 3)
+for i in 0 1 2 3; do
     (
         echo "[GPU $i] 准备就绪..."
         
         # ⚠️ 核心逻辑：步长循环
-        # 从 i 开始，每次跳 NUM_GPUS (8) 个位置
-        # 例如 GPU 0 会处理索引: 0, 8, 16...
-        # 例如 GPU 1 会处理索引: 1, 9, 17...
+        # 从 i 开始，每次跳 NUM_GPUS (4) 个位置
+        # 例如 GPU 0 会处理索引: 0, 4, 8...
+        # 例如 GPU 1 会处理索引: 1, 5, 9...
         for (( j=i; j<TOTAL_TASKS; j+=NUM_GPUS )); do
         
             # 取出对应索引的数据集路径
@@ -40,8 +38,8 @@ for i in 0 1 2 3 4 5 6 7; do
             
             # 执行 Python 命令
             CUDA_VISIBLE_DEVICES=$i python $SCRIPT_NAME \
-                --dataset "$CURRENT_DATA" --max_gen 1000 -m Qwen3-14B \
-                > ./log/log_gpu_non_thinking_0.94_${CURRENT_DATA}.txt 2>&1
+                --dataset "$CURRENT_DATA" --max_gen 1000 \
+                > ./log/llama_${CURRENT_DATA}.txt 2>&1
                 
             echo "  -> [GPU $i] 完成: $CURRENT_DATA"
             
